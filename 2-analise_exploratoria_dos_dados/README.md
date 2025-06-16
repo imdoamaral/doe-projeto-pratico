@@ -120,6 +120,58 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 ---
 
+## Gráfico 7: Distribuição de mensagens por usuário (PMF)
+
+![Distribuição PMF](distribuicao_mensagens_por_usuario.png)
+
+**O que mostra:**
+
+- No eixo X: número de mensagens enviadas por um usuário.
+- No eixo Y: a probabilidade (normalizada) de um usuário ter enviado aquela quantidade de mensagens.
+
+**Interpretação:**
+
+- **Distribuição extremamente assimétrica (long tail):**
+  - A maioria esmagadora dos usuários enviou poucas mensagens, concentrando-se entre 1 e 5.
+  - Um pequeno grupo de usuários enviou centenas ou até milhares de mensagens.
+- **Concentração extrema de atividade:**
+  - A frequência cai rapidamente após 5 mensagens, mas valores relevantes persistem até mais de 2000 mensagens.
+- **Presença de "superusuários":**
+  - Os 5% mais ativos (469 usuários) enviaram pelo menos 128 mensagens cada.
+  - Esse grupo pode incluir fãs dedicados, bots ou moderadores, influenciando significativamente a tonalidade e o ritmo da conversa.
+
+---
+
+## Gráfico 8: Comparação entre Canais Grandes e Pequenos
+
+![Comparação](comparacao_canais.png)
+
+**O que mostra:**
+
+- Comparação de três métricas: volume médio de mensagens por live, número médio de mensagens por usuário e tempo médio entre mensagens.
+- Os canais são divididos em "Grandes" (top 40% por volume médio) e "Pequenos" (os demais).
+
+**Interpretação:**
+
+- **Volume médio por live:** Canais grandes (19302.30) têm significativamente mais mensagens por live que os pequenos (3588.40), refletindo maior engajamento.
+- **Mensagens por usuário:** Valores semelhantes (21.28 para grandes vs. 28.71 para pequenos) sugerem que a diferença de volume vem do número de usuários, não da atividade individual.
+- **Tempo médio entre mensagens:** Canais grandes (6.41s) têm interações mais rápidas que os pequenos (28.32s), indicando maior dinamismo.
+
+## Tabela: Canais Grandes e Pequenos
+
+| Categoria | Canais              |
+|-----------|---------------------|
+| Grandes   | LUANGAMEPLAY, REnanPLAY |
+| Pequenos  | BiahKov, CAVALÃO 2, Diego Sheipado |
+
+## Tabela: Critério de Classificação
+
+| Critério                | Descrição                                      |
+|--------------------------|------------------------------------------------|
+| Quantil 60% do volume médio de mensagens por live | Canais com volume médio acima do 60º percentil são classificados como "grandes"; os abaixo são "pequenos". |
+
+---
+
 ## Conclusões Práticas
 
 - **Diferenças claras de engajamento** entre os canais.
