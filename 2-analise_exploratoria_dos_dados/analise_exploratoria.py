@@ -7,7 +7,7 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
-# Download de recursos do NLTK (executar no início)
+# # Download de recursos do NLTK (executar no início)
 nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.download('stopwords')
@@ -19,7 +19,7 @@ df['canal'] = df['canal'].astype(str).str.strip()
 # Calcula o tamanho de cada mensagem (em caracteres)
 df['tamanho_mensagem'] = df['mensagem'].str.len()
 
-# Criação e mesclagem de quantidade_mensagens (mantida globalmente)
+# Criação global de quantidade_mensagens
 mensagens_por_live = df.groupby('id_video').size().reset_index(name='quantidade_mensagens')
 canal_por_live = df[['id_video', 'canal']].drop_duplicates()
 mensagens_por_live = mensagens_por_live.merge(canal_por_live, on='id_video')
@@ -31,7 +31,6 @@ plt.hist(mensagens_por_live['quantidade_mensagens'])
 plt.title("Histograma da quantidade de mensagens por transmissão")
 plt.xlabel("Quantidade de mensagens")
 plt.ylabel("Frequência")
-# Certifica de que os zeros do eixo x e y comecem no mesmo lugar
 plt.xlim(left=0)
 plt.ylim(bottom=0)
 plt.grid(False)
@@ -45,13 +44,9 @@ dados_por_canal = [
     mensagens_por_live[mensagens_por_live['canal'] == canal]['quantidade_mensagens']
     for canal in canais
 ]
-
-# Calcular medianas para ordenação
 medianas = [dados_por_canal[i].median() for i in range(len(canais))]
-# Ordenar canais por mediana decrescente
 canais_ordenados = [canais[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
 dados_ordenados = [dados_por_canal[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
-
 plt.boxplot(dados_ordenados, tick_labels=canais_ordenados)
 plt.title("Boxplot da quantidade de mensagens por canal")
 plt.xlabel("Canal")
@@ -65,29 +60,19 @@ plt.savefig("boxplot_mensagens_por_canal.png", dpi=300)
 plt.close()
 
 # HEATMAP
-# Converte timestamp para datetime
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-
-# Agrupa por canal e dia
 df['dia'] = df['timestamp'].dt.date
 mensagens_por_dia = df.groupby(['canal', 'dia']).size().reset_index(name='quantidade_mensagens')
-
-# Pivota para heatmap
 pivot_data = mensagens_por_dia.pivot(index='canal', columns='dia', values='quantidade_mensagens').fillna(0)
-
-# Converter colunas (dias) para timezone local (UTC-3)
 tz_local = pytz.timezone('America/Sao_Paulo')
 pivot_data.columns = [tz_local.localize(pd.Timestamp(d)).date() for d in pivot_data.columns]
-
-# Plot
 plt.figure()
 plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
 plt.title('Densidade de mensagens por canal e dia')
 plt.xlabel('Dia')
 plt.ylabel('Canal')
-# Ajustar xticks para mostrar dd/mm, centralizar e evitar sobreposição
 plt.xticks(ticks=range(len(pivot_data.columns)), labels=[f"{d.day:02d}/{d.month:02d}" for d in pivot_data.columns], rotation=45, ha='center', va='center')
-plt.tick_params(axis='x', length=5, width=1, pad=10)  # Adiciona tracinhos e espaçamento
+plt.tick_params(axis='x', length=5, width=1, pad=10)
 plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
 plt.colorbar(label='Quantidade de mensagens')
 plt.tight_layout()
@@ -95,54 +80,37 @@ plt.savefig("heatmap_mensagens_por_canal_dia.png", dpi=300)
 plt.close()
 
 # MENSAGENS POR CANAL E DIA
-# Converte timestamp para datetime
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-
-# Agrupa por canal e dia, somando as mensagens
 df['dia'] = df['timestamp'].dt.date
 mensagens_por_dia = df.groupby(['canal', 'dia']).size().reset_index(name='quantidade_mensagens')
-
-# Pivot para barras agrupadas
 pivot_data = mensagens_por_dia.pivot(index='dia', columns='canal', values='quantidade_mensagens').fillna(0)
-
-# Converter índice para timezone local (UTC-3)
 tz_local = pytz.timezone('America/Sao_Paulo')
 pivot_data.index = [tz_local.localize(pd.Timestamp(d)).date() for d in pivot_data.index]
-
-# Plot
 pivot_data.plot(kind='bar')
 plt.title('Volume de mensagens por canal e dia')
 plt.xlabel('Dia')
 plt.ylabel('Quantidade de mensagens')
-# Ajustar xticks para mostrar dd/mm, centralizar e evitar sobreposição
 plt.xticks(ticks=range(len(pivot_data.index)), labels=[f"{d.day:02d}/{d.month:02d}" for d in pivot_data.index], rotation=45, ha='center', va='center')
-plt.tick_params(axis='x', length=5, width=1, pad=10)  # Adiciona tracinhos e espaçamento
+plt.tick_params(axis='x', length=5, width=1, pad=10)
 plt.legend(title='Canal')
 plt.tight_layout()
 plt.savefig("barras_mensagens_por_canal_dia.png", dpi=300)
 plt.close()
 
 # TAMANHO MÉDIO DAS MENSAGENS (CONTEXTO GLOBAL)
-# Converte timestamp para datetime com formato ISO8601
 df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601', utc=True)
-
-# Converte para timezone local (UTC-3)
 tz_local = pytz.timezone('America/Sao_Paulo')
 df['timestamp_local'] = df['timestamp'].dt.tz_convert(tz_local)
-
-# HEATMAP GLOBAL POR DIA E TAMANHO MÉDIO
 tamanho_medio_por_dia = df.groupby(['canal', df['timestamp_local'].dt.date])['tamanho_mensagem'].mean().reset_index()
 pivot_data = tamanho_medio_por_dia.pivot(index='canal', columns='timestamp_local', values='tamanho_mensagem').fillna(0)
-tz_local = pytz.timezone('America/Sao_Paulo')
 pivot_data.columns = [tz_local.localize(pd.Timestamp(d)).date() for d in pivot_data.columns]
 plt.figure()
 plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
 plt.title('Tamanho médio das mensagens por canal e dia')
 plt.xlabel('Dia')
 plt.ylabel('Canal')
-# Ajustar xticks para mostrar dd/mm, centralizar e evitar sobreposição
 plt.xticks(ticks=range(len(pivot_data.columns)), labels=[f"{d.day:02d}/{d.month:02d}" for d in pivot_data.columns], rotation=45, ha='center', va='center')
-plt.tick_params(axis='x', length=5, width=1, pad=10)  # Adiciona tracinhos e espaçamento
+plt.tick_params(axis='x', length=5, width=1, pad=10)
 plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
 plt.colorbar(label='Tamanho médio (caracteres)')
 plt.tight_layout()
@@ -150,44 +118,26 @@ plt.savefig("heatmap_tamanho_medio_mensagens.png", dpi=300)
 plt.close()
 
 # ANÁLISE DO VOCABULÁRIO: PALAVRAS MAIS FREQUENTES
-# Combina todas as mensagens em um único texto
 texto_completo = ' '.join(df['mensagem'].dropna().astype(str).tolist())
-
-# Tokenização e remoção de stopwords
 stop_words = set(stopwords.words('portuguese'))
 palavras = word_tokenize(texto_completo.lower())
-# Filtra apenas palavras alfanuméricas (letras) com pelo menos 2 caracteres
 palavras_filtradas = [palavra for palavra in palavras if palavra.isalpha() and len(palavra) > 1 and palavra not in stop_words]
-
-# Conta a frequência das palavras
 frequencia_palavras = nltk.FreqDist(palavras_filtradas)
-
-# Gera a nuvem de palavras com configurações padrão e colormap ajustado
 wordcloud = WordCloud(width=1200, height=600, background_color='white', min_font_size=10, colormap='Dark2').generate_from_frequencies(frequencia_palavras)
-
-# Plota a nuvem de palavras
 plt.figure(figsize=(12, 6))
 plt.imshow(wordcloud, interpolation='bilinear')
-# plt.title('Nuvem de palavras mais frequentes nos chats')
 plt.axis('off')
 plt.tight_layout()
 plt.savefig("nuvem_palavras_chats.png", dpi=600)
 plt.close()
-
-# Mostra as 10 palavras mais frequentes (opcional)
 print("10 palavras mais frequentes:")
 print(frequencia_palavras.most_common(10))
 
 # DISTRIBUIÇÃO DE MENSAGENS POR USUÁRIO
-# Conta mensagens por usuário (usando 'autor' conforme amostra)
 mensagens_por_usuario = df.groupby('autor').size().reset_index(name='quantidade_mensagens')
-
-# Calcula PMF
 mensagens_por_usuario = mensagens_por_usuario[mensagens_por_usuario['quantidade_mensagens'] > 0]
 total_usuarios = len(mensagens_por_usuario)
 mensagens_por_usuario['pmf'] = mensagens_por_usuario['quantidade_mensagens'] / total_usuarios
-
-# Histograma da PMF
 plt.hist(mensagens_por_usuario['quantidade_mensagens'], weights=mensagens_por_usuario['pmf'], bins=50, edgecolor='black')
 plt.title('Distribuição de mensagens por usuário (PMF)')
 plt.xlabel('Quantidade de mensagens por usuário')
@@ -197,19 +147,12 @@ plt.grid(False)
 plt.tight_layout()
 plt.savefig("distribuicao_mensagens_por_usuario.png", dpi=300)
 plt.close()
-
-# Identifica superusuários (top 5%)
 quantil_95 = mensagens_por_usuario['quantidade_mensagens'].quantile(0.95)
 superusuarios = mensagens_por_usuario[mensagens_por_usuario['quantidade_mensagens'] >= quantil_95]
 print(f"Número de superusuários (top 5%): {len(superusuarios)}")
 print(f"Quantidade mínima de mensagens para ser superusuário: {quantil_95}")
 
 # COMPARAÇÃO ENTRE CANAIS GRANDES E PEQUENOS
-# Calcula quantidade de mensagens por id_video e mescla com df
-mensagens_por_live = df.groupby('id_video').size().reset_index(name='quantidade_mensagens')
-df = df.merge(mensagens_por_live[['id_video', 'quantidade_mensagens']], on='id_video', how='left')
-
-# Classifica canais como grandes ou pequenos (ajusta para quantil 60%)
 volume_medio_por_canal = df.groupby('canal')['quantidade_mensagens'].mean().reset_index()
 quantil_60 = volume_medio_por_canal['quantidade_mensagens'].quantile(0.60)  # Ajuste para top 40%
 canais_grandes = volume_medio_por_canal[volume_medio_por_canal['quantidade_mensagens'] >= quantil_60]['canal'].tolist()
@@ -273,7 +216,6 @@ plt.savefig("comparacao_canais.png", dpi=300)
 plt.close()
 
 # COMPARAÇÃO ENTRE TRANSMISSÕES DE STREAMERS HOMENS E MULHERES
-# Classifica canais por gênero (BiahKov como mulher, outros como homens)
 df['genero_streamer'] = df['canal'].apply(lambda x: 'Mulher' if x == 'BiahKov' else 'Homem')
 
 # Volume médio de mensagens por live
@@ -310,7 +252,7 @@ print(f"Percentual de mensagens com 'kkkk' - Homens: {percentual_kkkk_homens:.2f
 print(f"Percentual de mensagens com emojis - Homens: {percentual_emoji_homens:.2f}%, Mulheres: {percentual_emoji_mulheres:.2f}%")
 
 # Gráfico de barras comparativo
-metricas = ['Volume médio/live', 'Mensagens/usuário', 'Tempo médio (s)', 'kkkk (%)', 'Emojis (%)']
+metricas = ['Volume médio/live', 'Msgs/usuário', 'Tempo médio (s)', 'kkkk (%)', 'Emojis (%)']
 valores_homens = [volume_medio_homens, mensagens_por_usuario_homens, tempo_medio_homens, percentual_kkkk_homens, percentual_emoji_homens]
 valores_mulheres = [volume_medio_mulheres, mensagens_por_usuario_mulheres, tempo_medio_mulheres, percentual_kkkk_mulheres, percentual_emoji_mulheres]
 x = np.arange(len(metricas))
@@ -320,15 +262,15 @@ bars1 = plt.bar(x - width/2, valores_homens, width, label='Homens', color='blue'
 bars2 = plt.bar(x + width/2, valores_mulheres, width, label='Mulheres', color='orange')
 plt.ylabel('Valores')
 plt.title('Comparação entre Streamers Homens e Mulheres')
-plt.xticks(x + width/2, metricas, rotation=45, ha='right')  # Centraliza xticks entre barras
+plt.xticks(x, metricas, fontsize=8)  # Reduz fonte dos xticks
 plt.legend()
 plt.yscale('symlog')
-plt.ylim(1, max(max(valores_homens), max(valores_mulheres)) * 1.5)
+plt.ylim(1, max(max(valores_homens), max(valores_mulheres)) * 2)
 for bars in [bars1, bars2]:
     for bar in bars:
         height = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2, height, f'{height:.1f}',  # Reduzido para 1 casa decimal
-                 ha='center', va='bottom' if height > 0 else 'top', fontsize=8)  # Reduzido tamanho da fonte
+        plt.text(bar.get_x() + bar.get_width()/2, height, f'{height:.1f}',
+                 ha='center', va='bottom' if height > 0 else 'top', fontsize=8)  # Reduz fonte dos rótulos
 
 plt.tight_layout()
 plt.savefig("comparacao_genero.png", dpi=300)
