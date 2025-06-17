@@ -14,9 +14,7 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 **Interpretação:**
 
-- A distribuição é fortemente assimétrica, com uma **cauda longa à direita**.
-- A maioria dos canais tem transmissões com volume de mensagens moderado, mas há **casos excepcionais com altíssimo engajamento**.
-- Essa assimetria sugere a necessidade de tratamento de outliers ou transformações para normalização.
+- A distribuição exibe uma forte assimetria com cauda longa à direita, indicando que a maioria das transmissões tem engajamento moderado, enquanto algumas apresentam volumes excepcionalmente altos, sugerindo a necessidade de considerar outliers em análises futuras.
 
 ---
 
@@ -31,9 +29,7 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 **Interpretação:**
 
-- Os canais apresentam padrões distintos de engajamento.
-- Alguns canais concentram transmissões com maior volume de mensagens e variabilidade interna, enquanto outros possuem transmissões mais homogêneas e com menor volume geral.
-- A presença de outliers reforça a necessidade de um olhar cuidadoso sobre valores extremos em análises posteriores.
+- Os canais mostram padrões variados de engajamento, com alguns exibindo maior volume e variabilidade, enquanto outros mantêm transmissões mais homogêneas, destacando a influência de outliers na análise geral.
 
 ---
 
@@ -48,9 +44,7 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 **Interpretação:**
 
-- Há dias de pico de atividade muito concentrada em alguns canais.
-- Canais com menor volume apresentam distribuição mais espalhada, sem grandes concentrações.
-- A visualização permite identificar padrões de comportamento recorrente por canal.
+- A visualização revela picos de atividade concentrados em alguns canais e dias, com outros apresentando uma distribuição mais uniforme, sugerindo padrões recorrentes de engajamento.
 
 ---
 
@@ -64,9 +58,7 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 **Interpretação:**
 
-- Um canal se destaca em volume geral ao longo da maioria dos dias.
-- Outros canais apresentam picos relevantes, mas com menos regularidade.
-- Canais com menor engajamento mantêm baixa variação e consistência.
+- Um canal se destaca em volume geral, enquanto outros mostram picos esporádicos, e canais menores mantêm consistência baixa, refletindo diferenças na dinâmica de engajamento.
 
 ---
 
@@ -81,20 +73,13 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 **Interpretação:**
 
-- Alguns canais apresentam picos de tamanho médio de mensagens em certos períodos.
-- Outros mantêm um padrão relativamente estável, com mensagens de tamanho médio entre 20 e 30 caracteres.
-- Há oscilações entre mensagens mais concisas e períodos de maior elaboração textual.
-- Essa métrica pode estar relacionada ao tipo de interação do público — comentários curtos podem indicar reatividade, enquanto mensagens mais longas sugerem engajamento explicativo ou conversacional.
+- A análise destaca variações no tamanho médio das mensagens entre canais e períodos, sugerindo que o tipo de interação (reativa ou conversacional) pode influenciar a dinâmica dos chats.
 
 ---
 
-## Gráfico 6: Nuvem de palavras mais frequentes nos chats
+## Análise 6: Nuvem de palavras mais frequentes nos chats
 
 ![Nuvem de Palavras](nuvem_palavras_chats.png)
-
-**O que mostra:**
-
-- Representação visual das palavras mais usadas nos chats, com tamanho proporcional à frequência.
 
 ## Tabela: 10 Palavras Mais Frequentes
 
@@ -113,9 +98,7 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 **Interpretação:**
 
-- A tabela destaca os termos mais recorrentes, reforçando o tom casual e o foco em gaming e interação com streamers.
-- "kkkkkkkkkkkkkkkk" reflete o humor característico da comunidade.
-- Nomes como "renan" e "sheipado" indicam a relevância de streamers específicos na dinâmica dos chats.
+- A nuvem e a tabela revelam um tom casual e centrado em gaming, com destaque para humor ("kkkkkkkkkkkkkkkk") e menções a streamers, indicando a influência de figuras específicas na interação da comunidade.
 
 ---
 
@@ -130,14 +113,7 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 
 **Interpretação:**
 
-- **Distribuição extremamente assimétrica (long tail):**
-  - A maioria esmagadora dos usuários enviou poucas mensagens, concentrando-se entre 1 e 5.
-  - Um pequeno grupo de usuários enviou centenas ou até milhares de mensagens.
-- **Concentração extrema de atividade:**
-  - A frequência cai rapidamente após 5 mensagens, mas valores relevantes persistem até mais de 2000 mensagens.
-- **Presença de "superusuários":**
-  - Os 5% mais ativos enviaram pelo menos 128 mensagens cada.
-  - Esse grupo pode incluir fãs dedicados, bots ou moderadores, influenciando significativamente a tonalidade e o ritmo da conversa.
+- A distribuição apresenta uma forte assimetria, com a maioria dos usuários enviando poucas mensagens e um pequeno grupo de superusuários contribuindo significativamente, sugerindo uma dinâmica de engajamento concentrada.
 
 ---
 
@@ -164,19 +140,11 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 | Mensagens por usuário          | 21.28    | 28.71    |
 | Tempo médio entre mensagens (s)| 6.41     | 28.32    |
 
-**O que mostra:**
-
-- Comparação de três métricas: volume médio de mensagens por live, número médio de mensagens por usuário e tempo médio entre mensagens.
-- Os canais são divididos em "Grandes" (top 40% por volume médio) e "Pequenos" (os demais).
-
 **Interpretação:**
 
-- **Volume médio por live:** Canais com maior engajamento têm significativamente mais mensagens por live que os menores, refletindo maior atividade.
-- **Mensagens por usuário:** Valores semelhantes entre os grupos sugerem que a diferença de volume vem do número de usuários, não da atividade individual.
-- **Tempo médio entre mensagens:** Canais com maior engajamento têm interações mais rápidas, indicando maior dinamismo.
+- Canais grandes apresentam maior volume de mensagens por live e interações mais rápidas, enquanto a atividade por usuário é semelhante, sugerindo que o engajamento total depende do número de participantes.
 
 ---
-
 
 ## Análise 9: Comparação entre Streamers Homens e Mulheres
 
@@ -186,19 +154,25 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 | Mensagens por usuário         | 25.24     | 27.73     |
 | Tempo médio entre mensagens (s) | 10.34    | 41.75     |
 | Percentual de "kkkk" (%)      | 19.65     | 20.80     |
-| Percentual de emojis (%)      | 2.15      | 3.10      |
-
-**O que mostra:**
-
-- Comparação de cinco métricas: volume médio de mensagens por live, número médio de mensagens por usuário, tempo médio entre mensagens, percentual de mensagens com "kkkk", e percentual de mensagens com emojis, entre streamers classificados como homens e mulheres.
+| Percentual de mensagens com emojis (%) | 2.15    | 3.10      |
 
 **Interpretação:**
 
-- **Volume médio por live:** Homens têm maior volume que mulheres, indicando maior engajamento geral.
-- **Mensagens por usuário:** Valores próximos sugerem similaridade na atividade individual.
-- **Tempo médio entre mensagens:** Homens têm interações mais rápidas que mulheres, refletindo maior dinamismo.
-- **Percentual de mensagens com "kkkk":** Ambos os grupos mostram uso similar de humor.
-- **Percentual de mensagens com emojis:** Mulheres superam homens, sugerindo maior uso de expressões visuais.
+- Homens mostram maior volume e dinamismo nos chats, enquanto mulheres têm interações ligeiramente mais espaçadas e maior uso de emojis, com semelhanças no uso de humor, sugerindo diferenças culturais ou de estilo de interação.
+
+---
+
+## Análise 10: Estatísticas Globais por Transmissão
+
+| Variável                  | Média    | Mediana  | Moda    |
+|---------------------------|----------|----------|---------|
+| quantidade_mensagens      | 8826.30  | 3332.50  | N/A     |
+| tamanho_mensagem_médio    | 31.81    | 29.89    | N/A     |
+| tempo_médio_entre_msg     | 27.35    | 15.70    | N/A     |
+
+**Interpretação:**
+
+- A análise revela uma variação significativa nas métricas por transmissão, com médias e medianas indicando distribuições assimétricas, especialmente em `quantidade_mensagens` e `tempo_médio_entre_msg`. A ausência de moda aplicável ("N/A") reflete a diversidade única de cada live, sem padrões repetitivos, destacando a necessidade de focar em medidas centrais como média e mediana para capturar as tendências gerais.
 
 ---
 
@@ -207,8 +181,8 @@ Este documento resume os gráficos gerados e apresenta as principais conclusões
 - **Diferenças claras de engajamento** entre os canais.
 - Alguns canais se destacam por alto volume de mensagens e devem ser considerados com cuidado na normalização das análises.
 - A presença de transmissões com altíssima interação sugere que será importante:
-  - Detectar e avaliar os outliers, tratando-os apenas quando forem inconsistentes com o comportamento esperado do conjunto de dados
-  - Levar em conta o canal nas análises futuras, já que ele pode influenciar os resultados e gerar diferenças no volume de mensagens entre as transmissões
+  - Detectar e avaliar os outliers, tratando-os apenas quando forem inconsistentes com o comportamento esperado do conjunto de dados.
+  - Levar em conta o canal nas análises futuras, já que ele pode influenciar os resultados e gerar diferenças no volume de mensagens entre as transmissões.
 - Canais menores têm distribuições mais concentradas e previsíveis.
 - A análise por gênero revela diferenças no dinamismo e uso de emojis, sugerindo variações culturais ou de interação que podem ser exploradas em estudos futuros.
 
