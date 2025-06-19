@@ -180,7 +180,7 @@
 |--------------------------|------------------------------------------------|
 | Quantil 60% do volume médio de mensagens por live | Um "quantil" ajuda a dividir os canais em grupos com base no volume médio de mensagens por live. Canais que têm mais mensagens do que 60% dos outros são chamados de "grandes"; os que têm menos são considerados "pequenos". |
 
-- **Observação:** Poderia usar a média ou mediana como corte, mas a média pode ser influenciada por valores extremos (outliers), e a mediana divide exatamente ao meio (50%), o que pode não destacar o suficiente os maiores canais. Outros percentis (ex.: 75%) ou até clustering (agrupamento) poderiam ser opções se quisesse uma divisão mais detalhada, mas são mais complexos.
+- **Observação:** Poderia usar a média ou mediana como corte, mas a média pode ser influenciada por valores extremos (outliers), e a mediana divide exatamente ao meio (50%), o que pode não destacar o suficiente os maiores canais.
 
 ### Tabela: Canais Grandes e Pequenos
 
