@@ -11,8 +11,12 @@
   - Verificação de distribuição teórica dos dados
 
 ### 1.2 Atualizações
+- **Relevância/Timing:** No início de junho, o artigo ganhou mais relevância após a condenação de um famoso humorista adepto do humor politicamente incorreto.
+
+  ![](captura_tela_condenacao_leo_lins.png)
+
 - **Título mais descritivo:** “Análise de chats de transmissões ao vivo no Youtube em uma sub comunidade gamer de humor negro”
-- **Metadados:** o script de captura de chat foi atualizado para coletar mais campos: likes, visualizaçoes e comentarios pós-live.
+- **Metadados:** o script de captura de chat foi atualizado para coletar mais campos (likes, visualizaçoes e comentarios pós-live).
 - **Considerações sobre o comentário do colega Richard, na minha primeira apresentação:**
   - Na ocasião, ele propôs uma boa reflexão: “As expressões veladas/códigos da comunidade seriam tratados como texto tóxico ou não?”
   - **R:** Não vamos rotular como tóxico nem como não tóxico, vamos dar o significado da expressão e deixar o rotulador/classificador definir baseado no contexto.
@@ -23,7 +27,6 @@
 ## 2. Apresentação da análise exploratória dos dados: Visualizações gráficas, estatı́sticas descritivas e análise de distribuições
 
 ### 2.1 Descrição do Dataset
-- Canais analisados: 5
 - Período: 06/06/2025 a 15/06/2025
 - Total de mensagens: 264.791
 - Total de lives: 30
@@ -37,7 +40,7 @@
 | CAVALÃO 2     | 7          | 15.310           |
 
 ### 2.2 Caracterização (Como eu cheguei a esses 5 canais)
-1. Foi identificado um vídeo viral de 2024 que mapeia e caracteriza os principais streamers dessa subcomunidade gamer polêmica do YouTube. [Link](https://youtu.be/dK1ZOCCbEDI?si=Z4ozIZke1aGJxmAQ) (Esse vídeo teve cerca de 200 mil visualizações e foi reagido várias vezes alcançando um total aproximado de 5 milhões de visualizações)
+1. Foi identificado um vídeo viral de 2024 que mapeia e caracteriza os principais streamers dessa subcomunidade gamer polêmica do YouTube. [Link](https://youtu.be/dK1ZOCCbEDI?si=Z4ozIZke1aGJxmAQ) (Esse vídeo teve cerca de 200.000 visualizações e foi reagido várias vezes alcançando um total aproximado de 5.000.000 de visualizações)
 2. A partir da transcrição do vídeo, foi extraído o nome de todos os streamers explicitamente citados como membros da bolha.
 3. De um total de 8 streamers, selecionou-se um top 5 baseando-se num critério de engajamento = quantidade de visualizações em 2025.
 4. Posteriormente, após discussão com a orientadora, passou-se a monitorar todos os canais.
@@ -59,7 +62,21 @@
 
 ### 2.4 Análises
 
-### Análise 1: Histograma da quantidade de mensagens por transmissão
+### Análise 1: Estatísticas Globais por Transmissão
+
+| Variável                  | Média    | Mediana  | Moda    |
+|---------------------------|----------|----------|---------|
+| quantidade_mensagens      | 8.826,30 | 3.332,50 | N/A     |
+| tamanho_mensagem          | 31,81    | 29,89    | N/A     |
+| tempo_entre_mensagens     | 27,35    | 15,70    | N/A     |
+
+**Insight:**
+
+- A análise revela uma variação significativa nas métricas por transmissão, com médias e medianas indicando distribuições assimétricas, especialmente em `quantidade_mensagens` e `tempo_entre_mensagens`. A ausência de moda aplicável ("N/A") reflete a diversidade única de cada live, sem padrões repetitivos, destacando a necessidade de focar em medidas centrais como média e mediana para capturar as tendências gerais.
+
+---
+
+### Análise 2: Histograma da quantidade de mensagens por transmissão
 
 ![Histograma](histograma_mensagens_por_live.png)  
 
@@ -73,7 +90,7 @@
 
 ---
 
-### Análise 2: Boxplot da quantidade de mensagens por canal
+### Análise 3: Boxplot da quantidade de mensagens por canal
 
 ![Boxplot](boxplot_mensagens_por_canal.png)  
 
@@ -88,91 +105,7 @@
 
 ---
 
-### Análise 3: Volume de mensagens por canal e dia (heatmap)
-
-![Heatmap](heatmap_mensagens_por_canal_dia_corrigido.png)  
-
-**O que mostra:**
-
-- A intensidade de mensagens enviadas por dia, separada por canal.
-- Tons mais escuros representam maior volume de mensagens em determinado dia e canal.
-
-**Insight:**
-
-- A visualização revela picos de atividade concentrados em alguns canais e dias, com outros apresentando uma distribuição mais uniforme, sugerindo padrões recorrentes de engajamento.
-
----
-
-### Análise 4: Volume de mensagens por canal e dia (gráfico de barras)
-
-![Barras](barras_mensagens_por_canal_dia_corrigido.png)  
-
-**O que mostra:**
-
-- Comparação direta do volume de mensagens por dia entre os canais.
-
-**Insight:**
-
-- Um canal se destaca em volume geral, enquanto outros mostram picos esporádicos, e canais menores mantêm consistência baixa, refletindo diferenças na dinâmica de engajamento.
-
----
-
-### Análise 5: Tamanho médio das mensagens por canal e dia (heatmap)
-
-![Heatmap](heatmap_tamanho_medio_mensagens_corrigido.png)  
-
-**O que mostra:**
-
-- O tamanho médio das mensagens enviadas por dia, separado por canal.
-- Tons mais escuros indicam mensagens mais longas, enquanto tons claros indicam mensagens mais curtas.
-
-**Insight:**
-
-- A análise destaca variações no tamanho médio das mensagens entre canais e períodos, sugerindo que o tipo de interação (reativa ou conversacional) pode influenciar a dinâmica dos chats.
-
----
-
-### Análise 6: Nuvem de palavras mais frequentes nos chats
-
-![Nuvem de Palavras](nuvem_palavras_chats.png)
-
-### Tabela: 10 Palavras Mais Frequentes
-
-| Palavra         | Frequência |
-|-----------------|------------|
-| pra             | 5206       |
-| vai             | 5047       |
-| ai              | 3695       |
-| renan           | 3518       |
-| kkkkkkkkkkkkkkkk| 3102       |
-| opa             | 2930       |
-| live            | 2887       |
-| tá              | 2881       |
-| jogo            | 2636       |
-| sheipado        | 2597       |
-
-**Insight:**
-
-- A nuvem e a tabela revelam um tom casual e centrado em gaming, com destaque para humor ("kkkkkkkkkkkkkkkk") e menções a streamers, indicando a influência de figuras específicas na interação da comunidade.
-
----
-
-### Análise 7: Distribuição de mensagens por usuário (PMF)
-
-![Distribuição PMF](distribuicao_mensagens_por_usuario.png)  
-
-**O que mostra:**
-
-- No eixo X: número de mensagens enviadas por um usuário.
-- No eixo Y: a probabilidade (normalizada) de um usuário ter enviado aquela quantidade de mensagens.
-
-**Insight:**
-
-- A distribuição apresenta uma forte assimetria, com a maioria dos usuários enviando poucas mensagens e um pequeno grupo de superusuários contribuindo significativamente, sugerindo uma dinâmica de engajamento concentrada.
-
----
-
-### Análise 8: Comparação entre Canais Grandes e Pequenos
+### Análise 4: Comparação entre Canais Grandes e Pequenos
 
 ### Tabela: Critério de Classificação
 
@@ -193,9 +126,9 @@
 
 | Métrica                        | Grandes  | Pequenos |
 |--------------------------------|----------|----------|
-| Volume médio por live          | 19302.30 | 3588.40  |
-| Mensagens por usuário          | 21.28    | 28.71    |
-| Tempo médio entre mensagens (s)| 6.41     | 28.32    |
+| Volume médio por live          | 19.302,30| 3.588,40 |
+| Mensagens por usuário          | 21,28    | 28,71    |
+| Tempo médio entre mensagens (s)| 6,41     | 28,32    |
 
 **Insight:**
 
@@ -203,15 +136,15 @@
 
 ---
 
-### Análise 9: Comparação entre Streamers Homens e Mulheres
+### Análise 5: Comparação entre Streamers Homens e Mulheres
 
 | Métrica                       | Homens    | Mulheres  |
 |-------------------------------|-----------|-----------|
-| Volume médio por live         | 9912.92   | 3393.60   |
-| Mensagens por usuário         | 25.24     | 27.73     |
-| Tempo médio entre mensagens (s) | 10.34    | 41.75     |
-| Percentual de "kkkk" (%)      | 19.65     | 20.80     |
-| Percentual de mensagens com emojis (%) | 2.15    | 3.10      |
+| Volume médio por live         | 9.912,92  | 3.393,60  |
+| Mensagens por usuário         | 25,24     | 27,73     |
+| Tempo médio entre mensagens (s)| 10,34    | 41,75     |
+| Percentual de "kkkk" (%)      | 19,65     | 20,80     |
+| Percentual de mensagens com emojis (%) | 2,15    | 3,10      |
 
 **Insight:**
 
@@ -219,17 +152,90 @@
 
 ---
 
-### Análise 10: Estatísticas Globais por Transmissão
+### Análise 6: Volume de mensagens por canal e dia (heatmap)
 
-| Variável                  | Média    | Mediana  | Moda    |
-|---------------------------|----------|----------|---------|
-| quantidade_mensagens      | 8826.30  | 3332.50  | N/A     |
-| tamanho_mensagem          | 31.81    | 29.89    | N/A     |
-| tempo_entre_mensagens     | 27.35    | 15.70    | N/A     |
+![Heatmap](heatmap_mensagens_por_canal_dia_corrigido.png)  
+
+**O que mostra:**
+
+- A intensidade de mensagens enviadas por dia, separada por canal.
+- Tons mais escuros representam maior volume de mensagens em determinado dia e canal.
 
 **Insight:**
 
-- A análise revela uma variação significativa nas métricas por transmissão, com médias e medianas indicando distribuições assimétricas, especialmente em `quantidade_mensagens` e `tempo_entre_mensagens`. A ausência de moda aplicável ("N/A") reflete a diversidade única de cada live, sem padrões repetitivos, destacando a necessidade de focar em medidas centrais como média e mediana para capturar as tendências gerais.
+- A visualização revela picos de atividade concentrados em alguns canais e dias, com outros apresentando uma distribuição mais uniforme, sugerindo padrões recorrentes de engajamento.
+
+---
+
+### Análise 7: Volume de mensagens por canal e dia (gráfico de barras)
+
+![Barras](barras_mensagens_por_canal_dia_corrigido.png)  
+
+**O que mostra:**
+
+- Comparação direta do volume de mensagens por dia entre os canais.
+
+**Insight:**
+
+- Um canal se destaca em volume geral, enquanto outros mostram picos esporádicos, e canais menores mantêm consistência baixa, refletindo diferenças na dinâmica de engajamento.
+
+---
+
+### Análise 8: Nuvem de palavras mais frequentes nos chats
+
+![Nuvem de Palavras](nuvem_palavras_chats.png)
+
+### Tabela: 10 Palavras Mais Frequentes
+
+| Palavra         | Frequência |
+|-----------------|------------|
+| pra             | 5.206      |
+| vai             | 5.047      |
+| ai              | 3.695      |
+| renan           | 3.518      |
+| kkkkkkkkkkkkkkkk| 3.102      |
+| opa             | 2.930      |
+| live            | 2.887      |
+| tá              | 2.881      |
+| jogo            | 2.636      |
+| sheipado        | 2.597      |
+
+**Insight:**
+
+- A nuvem e a tabela revelam um tom casual e centrado em gaming, com destaque para humor ("kkkkkkkkkkkkkkkk") e menções a streamers, indicando a influência de figuras específicas na interação da comunidade.
+- Apenas um expressão velada teve destaque ("CP" - dentro da letra "a" da palavra "pra")
+
+---
+
+### Análise 9: Tamanho médio das mensagens por canal e dia (heatmap)
+
+![Heatmap](heatmap_tamanho_medio_mensagens_corrigido.png)  
+
+**O que mostra:**
+
+- O tamanho médio das mensagens enviadas por dia, separado por canal.
+- Tons mais escuros indicam mensagens mais longas, enquanto tons claros indicam mensagens mais curtas.
+
+**Insight:**
+
+- A análise destaca variações no tamanho médio das mensagens entre canais e períodos, sugerindo que o tipo de interação (reativa ou conversacional) pode influenciar a dinâmica dos chats.
+
+---
+
+### Análise 10: Distribuição de mensagens por usuário (PMF)
+
+![Distribuição PMF](distribuicao_mensagens_por_usuario.png)  
+
+**O que mostra:**
+
+- No eixo X: número de mensagens enviadas por um usuário.
+- No eixo Y: a probabilidade (normalizada) de um usuário ter enviado aquela quantidade de mensagens.
+
+**Insight:**
+
+- A distribuição apresenta uma forte assimetria, com a maioria dos usuários enviando poucas mensagens e um pequeno grupo de superusuários contribuindo significativamente, sugerindo uma dinâmica de engajamento concentrada.
+
+---
 
 ### Análise 11: Verificação de Distribuição Teórica de quantidade_mensagens
 
@@ -241,7 +247,7 @@
 - A saída do fitter indicou que a distribuição lognormal foi a melhor ajuste.
 
 **Insight:**
-- A distribuição lognormal reflete a assimetria observada no histograma (Análise 1), onde a maioria das transmissões tem poucas mensagens, mas algumas têm valores muito altos. 
+- A distribuição lognormal reflete a assimetria observada no histograma (Análise 2), onde a maioria das transmissões tem poucas mensagens, mas algumas têm valores muito altos. 
 - Isso confirma que os dados têm uma cauda longa à direita, típica de fenômenos onde poucos eventos extremos dominam (ex.: lives com alto engajamento).
 
 ---
@@ -257,10 +263,10 @@
 - **Completude dos Dados - Valores ausentes:** df.isnull().sum() mostra 0 ausentes em timestamp, canal, id_video, e mensagem, confirmando integridade.
 - **Total de linhas:** 264.791, consistente com a contagem total.
 - **Variabilidade:** quantidade_mensagens varia de 239 a 133.031 (média: 8.826, desvio padrão: 15.321), refletindo ampla gama de engajamento.
-- **tamanho_mensagem_médio:** varia de 5 a 120 caracteres (média: 31.81), mostrando diversidade de interações.
+- **tamanho_mensagem_médio:** varia de 5 a 120 caracteres (média: 31,81), mostrando diversidade de interações.
 - **Consistência:** Todos os timestamp foram convertidos com sucesso usando format='mixed', e a distribuição lognormal ajustada valida a estrutura dos dados.
 
-  **Conclusão:** Os dados estão quase prontos, com cobertura adequada e variabilidade esperada. A ausência de valores ausentes e a consistência dos formatos suportam a transição para a próxima fase, com ajustes menores a serem implementados.
+#### Conclusão: Os dados estão quase prontos, com cobertura adequada e variabilidade esperada. A ausência de valores ausentes e a consistência dos formatos suportam a transição para a próxima fase, com ajustes menores a serem implementados.
 ---
 
 ## 5. Conclusões
