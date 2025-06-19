@@ -225,11 +225,11 @@
 |---------------------------|----------|----------|---------|
 | quantidade_mensagens      | 8826.30  | 3332.50  | N/A     |
 | tamanho_mensagem          | 31.81    | 29.89    | N/A     |
-| tempo_entre_mensahens     | 27.35    | 15.70    | N/A     |
+| tempo_entre_mensagens     | 27.35    | 15.70    | N/A     |
 
 **Insight:**
 
-- A análise revela uma variação significativa nas métricas por transmissão, com médias e medianas indicando distribuições assimétricas, especialmente em `quantidade_mensagens` e `tempo_médio_entre_msg`. A ausência de moda aplicável ("N/A") reflete a diversidade única de cada live, sem padrões repetitivos, destacando a necessidade de focar em medidas centrais como média e mediana para capturar as tendências gerais.
+- A análise revela uma variação significativa nas métricas por transmissão, com médias e medianas indicando distribuições assimétricas, especialmente em `quantidade_mensagens` e `tempo_entre_mensagens`. A ausência de moda aplicável ("N/A") reflete a diversidade única de cada live, sem padrões repetitivos, destacando a necessidade de focar em medidas centrais como média e mediana para capturar as tendências gerais.
 
 ### Análise 11: Verificação de Distribuição Teórica de quantidade_mensagens
 
