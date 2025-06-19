@@ -224,8 +224,8 @@
 | Variável                  | Média    | Mediana  | Moda    |
 |---------------------------|----------|----------|---------|
 | quantidade_mensagens      | 8826.30  | 3332.50  | N/A     |
-| tamanho_mensagem_médio    | 31.81    | 29.89    | N/A     |
-| tempo_médio_entre_msg     | 27.35    | 15.70    | N/A     |
+| tamanho_mensagem          | 31.81    | 29.89    | N/A     |
+| tempo_entre_mensahens     | 27.35    | 15.70    | N/A     |
 
 **Insight:**
 
