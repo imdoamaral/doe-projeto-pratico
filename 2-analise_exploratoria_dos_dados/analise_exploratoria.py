@@ -26,109 +26,89 @@ mensagens_por_live = mensagens_por_live.merge(canal_por_live, on='id_video')
 mensagens_por_live = mensagens_por_live[mensagens_por_live['quantidade_mensagens'] > 0]
 df = df.merge(mensagens_por_live[['id_video', 'quantidade_mensagens']], on='id_video', how='left')
 
-# # HISTOGRAMA - MENSAGENS POR LIVE
-# plt.hist(mensagens_por_live['quantidade_mensagens'])
-# plt.title("Histograma da quantidade de mensagens por transmissão")
-# plt.xlabel("Quantidade de mensagens")
-# plt.ylabel("Frequência")
-# plt.xlim(left=0)
-# plt.ylim(bottom=0)
-# plt.grid(False)
-# plt.tight_layout()
-# plt.savefig("histograma_mensagens_por_live.png", dpi=300)
-# plt.close()
+# HISTOGRAMA - MENSAGENS POR LIVE
+plt.hist(mensagens_por_live['quantidade_mensagens'])
+plt.title("Histograma da quantidade de mensagens por transmissão")
+plt.xlabel("Quantidade de mensagens")
+plt.ylabel("Frequência")
+plt.xlim(left=0)
+plt.ylim(bottom=0)
+plt.grid(False)
+plt.tight_layout()
+plt.savefig("histograma_mensagens_por_live.png", dpi=300)
+plt.close()
 
-# # BOXPLOT - MENSAGENS POR CANAL
-# canais = mensagens_por_live['canal'].unique()
-# dados_por_canal = [
-#     mensagens_por_live[mensagens_por_live['canal'] == canal]['quantidade_mensagens']
-#     for canal in canais
-# ]
-# medianas = [dados_por_canal[i].median() for i in range(len(canais))]
-# canais_ordenados = [canais[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
-# dados_ordenados = [dados_por_canal[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
-# plt.boxplot(dados_ordenados, tick_labels=canais_ordenados)
-# plt.title("Boxplot da quantidade de mensagens por canal")
-# plt.xlabel("Canal")
-# plt.ylabel("Mensagens por transmissão")
-# plt.ylim(bottom=0)
-# plt.grid(axis='y', linestyle='dashed')
-# plt.grid(axis='x', visible=False)
-# plt.xticks(ticks=range(1, len(canais_ordenados) + 1), labels=canais_ordenados, rotation=45, ha='right', va='top')
-# plt.tight_layout()
-# plt.savefig("boxplot_mensagens_por_canal.png", dpi=300)
-# plt.close()
+# BOXPLOT - MENSAGENS POR CANAL
+canais = mensagens_por_live['canal'].unique()
+dados_por_canal = [
+    mensagens_por_live[mensagens_por_live['canal'] == canal]['quantidade_mensagens']
+    for canal in canais
+]
+medianas = [dados_por_canal[i].median() for i in range(len(canais))]
+canais_ordenados = [canais[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
+dados_ordenados = [dados_por_canal[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
+plt.boxplot(dados_ordenados, tick_labels=canais_ordenados)
+plt.title("Boxplot da quantidade de mensagens por canal")
+plt.xlabel("Canal")
+plt.ylabel("Mensagens por transmissão")
+plt.ylim(bottom=0)
+plt.grid(axis='y', linestyle='dashed')
+plt.grid(axis='x', visible=False)
+plt.xticks(ticks=range(1, len(canais_ordenados) + 1), labels=canais_ordenados, rotation=45, ha='right', va='top')
+plt.tight_layout()
+plt.savefig("boxplot_mensagens_por_canal.png", dpi=300)
+plt.close()
 
-# # HEATMAP - MENSAGENS POR CANAL E DIA
-# df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-# df['dia'] = df['timestamp'].dt.date
-# mensagens_por_dia = df.groupby(['canal', 'dia']).size().reset_index(name='quantidade_mensagens')
-# pivot_data = mensagens_por_dia.pivot(index='canal', columns='dia', values='quantidade_mensagens').fillna(0)
+# HEATMAP - MENSAGENS POR CANAL E DIA
+df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+df['dia'] = df['timestamp'].dt.date
+mensagens_por_dia = df.groupby(['canal', 'dia']).size().reset_index(name='quantidade_mensagens')
+pivot_data = mensagens_por_dia.pivot(index='canal', columns='dia', values='quantidade_mensagens').fillna(0)
 
-# plt.figure()
-# plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
-# plt.title('Densidade de mensagens por canal e dia')
-# plt.xlabel('Dia')
-# plt.ylabel('Canal')
-# plt.xticks(ticks=range(len(pivot_data.columns)), 
-#            labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
-#            rotation=45, ha='right')
-# plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
-# plt.colorbar(label='Quantidade de mensagens')
-# plt.tight_layout()
-# plt.savefig("heatmap_mensagens_por_canal_dia_corrigido.png", dpi=300)
-# plt.close()
+plt.figure()
+plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
+plt.title('Densidade de mensagens por canal e dia')
+plt.xlabel('Dia')
+plt.ylabel('Canal')
+plt.xticks(ticks=range(len(pivot_data.columns)), 
+           labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
+           rotation=45, ha='right')
+plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
+plt.colorbar(label='Quantidade de mensagens')
+plt.tight_layout()
+plt.savefig("heatmap_mensagens_por_canal_dia_corrigido.png", dpi=300)
+plt.close()
 
-# # GRÁFICO DE BARRAS - MENSAGENS POR CANAL E DIA
-# df['dia'] = pd.to_datetime(df['timestamp']).dt.date
+# HEATMAP - TAMANHO MÉDIO DAS MENSAGENS (CONTEXTO GLOBAL)
+df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601', utc=True)
+tz_local = pytz.timezone('America/Sao_Paulo')
+df['timestamp_local'] = df['timestamp'].dt.tz_convert(tz_local)
+tamanho_medio_por_dia = df.groupby(['canal', df['timestamp_local'].dt.date])['tamanho_mensagem'].mean().reset_index()
+pivot_data = tamanho_medio_por_dia.pivot(index='canal', columns='timestamp_local', values='tamanho_mensagem').fillna(0)
 
-# barras = (df.groupby(['dia', 'canal'])
-#             .size()
-#             .unstack(fill_value=0)
-#             .sort_index())
+plt.figure()
+plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
+plt.title('Tamanho médio das mensagens por canal e dia')
+plt.xlabel('Dia')
+plt.ylabel('Canal')
+# LINHA CORRIGIDA: ha='right'
+plt.xticks(ticks=range(len(pivot_data.columns)), 
+           labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
+           rotation=45, ha='right')
+plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
+plt.colorbar(label='Tamanho médio (caracteres)')
+plt.tight_layout()
+plt.savefig("heatmap_tamanho_medio_mensagens_corrigido.png", dpi=300)
+plt.close()
 
-# ax = barras.plot(kind='bar')
-# # LINHA CORRIGIDA: ha='right'
-# ax.set_xticklabels([d.strftime('%d/%m') for d in barras.index],
-#                    rotation=45, ha='right') 
-# ax.set_xlabel('Dia')
-# ax.set_ylabel('Quantidade de mensagens')
-# ax.set_title('Volume de mensagens por canal e dia')
-# ax.legend(title='Canal')
-# plt.tight_layout()
-# plt.savefig('barras_mensagens_por_canal_dia_corrigido.png', dpi=300)
-# plt.close()
-
-# # HEATMAP - TAMANHO MÉDIO DAS MENSAGENS (CONTEXTO GLOBAL)
-# df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601', utc=True)
-# tz_local = pytz.timezone('America/Sao_Paulo')
-# df['timestamp_local'] = df['timestamp'].dt.tz_convert(tz_local)
-# tamanho_medio_por_dia = df.groupby(['canal', df['timestamp_local'].dt.date])['tamanho_mensagem'].mean().reset_index()
-# pivot_data = tamanho_medio_por_dia.pivot(index='canal', columns='timestamp_local', values='tamanho_mensagem').fillna(0)
-
-# plt.figure()
-# plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
-# plt.title('Tamanho médio das mensagens por canal e dia')
-# plt.xlabel('Dia')
-# plt.ylabel('Canal')
-# # LINHA CORRIGIDA: ha='right'
-# plt.xticks(ticks=range(len(pivot_data.columns)), 
-#            labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
-#            rotation=45, ha='right')
-# plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
-# plt.colorbar(label='Tamanho médio (caracteres)')
-# plt.tight_layout()
-# plt.savefig("heatmap_tamanho_medio_mensagens_corrigido.png", dpi=300)
-# plt.close()
-
-# # WORDCLOUD - PALAVRAS MAIS FREQUENTES
-# texto_completo = ' '.join(df['mensagem'].dropna().astype(str).tolist())
-# stop_words = set(stopwords.words('portuguese'))
-# palavras = word_tokenize(texto_completo.lower())
-# palavras_filtradas = [palavra for palavra in palavras if palavra.isalpha() and len(palavra) > 1 and palavra not in stop_words]
-# frequencia_palavras = nltk.FreqDist(palavras_filtradas)
-# wordcloud = WordCloud(width=1200, height=600, background_color='white', min_font_size=10, colormap='Dark2').generate_from_frequencies(frequencia_palavras)
-# plt.figure(figsize=(12, 6))
+# WORDCLOUD - PALAVRAS MAIS FREQUENTES
+texto_completo = ' '.join(df['mensagem'].dropna().astype(str).tolist())
+stop_words = set(stopwords.words('portuguese'))
+palavras = word_tokenize(texto_completo.lower())
+palavras_filtradas = [palavra for palavra in palavras if palavra.isalpha() and len(palavra) > 1 and palavra not in stop_words]
+frequencia_palavras = nltk.FreqDist(palavras_filtradas)
+wordcloud = WordCloud(width=1200, height=600, background_color='white', min_font_size=10, colormap='Dark2').generate_from_frequencies(frequencia_palavras)
+plt.figure(figsize=(12, 6))
 # plt.imshow(wordcloud, interpolation='bilinear')
 # plt.axis('off')
 # plt.tight_layout()
@@ -225,39 +205,79 @@ df = df.merge(mensagens_por_live[['id_video', 'quantidade_mensagens']], on='id_v
 # print(f"Percentual de mensagens com 'kkkk' - Homens: {percentual_kkkk_homens:.2f}%, Mulheres: {percentual_kkkk_mulheres:.2f}%")
 # print(f"Percentual de mensagens com emojis - Homens: {percentual_emoji_homens:.2f}%, Mulheres: {percentual_emoji_mulheres:.2f}%")
 
-from fitter import Fitter
+# from fitter import Fitter
 
-# FITTER - TESTE DE DISTRIBUIÇÃO
-data = mensagens_por_live['quantidade_mensagens'].dropna()
+# # FITTER - TESTE DE DISTRIBUIÇÃO
+# data = mensagens_por_live['quantidade_mensagens'].dropna()
 
-# Criando o objeto Fitter com distribuições comuns a serem testadas
-f = Fitter(data, distributions=['norm', 'lognorm', 'expon', 'gamma', 'weibull_min'])
+# # Criando o objeto Fitter com distribuições comuns a serem testadas
+# f = Fitter(data, distributions=['norm', 'lognorm', 'expon', 'gamma', 'weibull_min'])
 
-# Ajustando as distribuições aos dados
-f.fit()
+# # Ajustando as distribuições aos dados
+# f.fit()
 
-# Exibindo o resumo com as melhores distribuições
-print(f.summary())
+# # Exibindo o resumo com as melhores distribuições
+# print(f.summary())
 
-# Exibindo a melhor distribuição encontrada
-print(f"Melhor distribuição: {f.get_best()}")
+# # Exibindo a melhor distribuição encontrada
+# print(f"Melhor distribuição: {f.get_best()}")
 
-# Gerando o gráfico da função de densidade de probabilidade
-f.plot_pdf()
-plt.title('Distribuições Ajustadas - Densidade de Probabilidade')
+# # Gerando o gráfico da função de densidade de probabilidade
+# f.plot_pdf()
+# plt.title('Distribuições Ajustadas - Densidade de Probabilidade')
 
-# Obtendo os eixos e destacando a distribuição lognormal
-axes = plt.gcf().get_axes()
-for ax in axes:
-    for line in ax.get_lines():
-        label = line.get_label()
-        if 'lognorm' in label.lower():
-            line.set_color('orange')  # Destaca lognormal em azul
-            line.set_linewidth(2)   # Aumenta a espessura
-        else:
-            line.set_color('gray')  # Outras em cinza
-            line.set_alpha(0.3)     # Reduz opacidade
+# # Obtendo os eixos e destacando a distribuição lognormal
+# axes = plt.gcf().get_axes()
+# for ax in axes:
+#     for line in ax.get_lines():
+#         label = line.get_label()
+#         if 'lognorm' in label.lower():
+#             line.set_color('orange')  # Destaca lognormal em azul
+#             line.set_linewidth(2)   # Aumenta a espessura
+#         else:
+#             line.set_color('gray')  # Outras em cinza
+#             line.set_alpha(0.3)     # Reduz opacidade
 
-plt.grid(False)  # Remove os grids
-plt.savefig('distribuicao_teorica_quantidade_mensagens.png', dpi=300, bbox_inches='tight')
-plt.close()  # Fecha a figura para evitar exibição
+# plt.grid(False)  # Remove os grids
+# plt.savefig('distribuicao_teorica_quantidade_mensagens.png', dpi=300, bbox_inches='tight')
+# plt.close()  # Fecha a figura para evitar exibição
+
+# from scipy.stats import linregress
+
+# # Dados fornecidos (ajustados para corresponder aos nomes do DataFrame)
+# canais = ["BiahKov", "Diego Sheipado", "CAVALÃO 2", "REnanPLAY", "LUANGAMEPLAY"]
+# inscritos = [32400, 37800, 7470, 151000, 1440000]
+
+# # Calcular média de mensagens por transmissão a partir do DataFrame
+# mensagens_media = df.groupby('canal')['quantidade_mensagens'].mean().reindex(canais).fillna(0).values
+
+# # Verificar os valores calculados
+# print("Média de mensagens por canal:", mensagens_media)
+
+# # Realizar regressão linear para linha de tendência
+# slope, intercept, r_value, p_value, std_err = linregress(inscritos, mensagens_media)
+# line = slope * np.array(inscritos) + intercept
+
+# # Criar o gráfico de dispersão
+# plt.figure()
+# plt.scatter(inscritos, mensagens_media, color='blue', label='Dados')
+# plt.plot(inscritos, line, color='red', label=f'Linha de Tendência (R² = {r_value**2:.2f})')
+
+# # Configurações do gráfico
+# plt.xlabel('Inscritos')
+# plt.ylabel('Média de Mensagens por Transmissão')
+# plt.title('Correlação entre Inscritos e Média de Mensagens por Transmissão')
+# plt.legend()
+# plt.grid(False)
+
+# # Adicionar rótulos aos pontos
+# for i, canal in enumerate(canais):
+#     plt.annotate(canal, (inscritos[i], mensagens_media[i]), xytext=(10, -3), textcoords='offset points')
+
+# # Ajustar escalas para melhor visualização
+# plt.xticks([151000, 1440000], ['151.000', '1.440.000'])
+# plt.ylim(0, max(mensagens_media) * 1.1 if max(mensagens_media) > 0 else 30000)  # Ajuste dinâmico do limite Y
+
+# # Salvar o gráfico
+# plt.savefig('correlacao_inscritos_mensagens.png', dpi=300, bbox_inches='tight')
+# plt.close()

@@ -167,21 +167,7 @@
 
 ---
 
-### Análise 7: Volume de mensagens por canal e dia (gráfico de barras)
-
-![Barras](barras_mensagens_por_canal_dia_corrigido.png)  
-
-**O que mostra:**
-
-- Comparação direta do volume de mensagens por dia entre os canais.
-
-**Insight:**
-
-- Um canal se destaca em volume geral, enquanto outros mostram picos esporádicos, e canais menores mantêm consistência baixa, refletindo diferenças na dinâmica de engajamento.
-
----
-
-### Análise 8: Nuvem de palavras mais frequentes nos chats
+### Análise 7: Nuvem de palavras mais frequentes nos chats
 
 ![Nuvem de Palavras](nuvem_palavras_chats.png)
 
@@ -207,7 +193,7 @@
 
 ---
 
-### Análise 9: Tamanho médio das mensagens por canal e dia (heatmap)
+### Análise 8: Tamanho médio das mensagens por canal e dia (heatmap)
 
 ![Heatmap](heatmap_tamanho_medio_mensagens_corrigido.png)  
 
@@ -222,7 +208,7 @@
 
 ---
 
-### Análise 10: Distribuição de mensagens por usuário (PMF)
+### Análise 9: Distribuição de mensagens por usuário (PMF)
 
 ![Distribuição PMF](distribuicao_mensagens_por_usuario.png)  
 
@@ -237,7 +223,7 @@
 
 ---
 
-### Análise 11: Verificação de Distribuição Teórica de quantidade_mensagens
+### Análise 10: Verificação de Distribuição Teórica de quantidade_mensagens
 
 ![](distribuicao_teorica_quantidade_mensagens.png)
 
@@ -249,6 +235,22 @@
 **Insight:**
 - A distribuição lognormal reflete a assimetria observada no histograma (Análise 2), onde a maioria das transmissões tem poucas mensagens, mas algumas têm valores muito altos. 
 - Isso confirma que os dados têm uma cauda longa à direita, típica de fenômenos onde poucos eventos extremos dominam (ex.: lives com alto engajamento).
+
+---
+
+### Análise 11: Correlação entre Inscritos e Média de Mensagens por Transmissão
+
+![Correlação](correlacao_inscritos_mensagens.png)  
+
+**O que mostra:**
+
+- Um gráfico de dispersão que relaciona o número de inscritos (eixo X) com a média de mensagens por transmissão (eixo Y) para os canais analisados.
+- Uma linha de tendência vermelha (R² = 0,11) mostra a relação geral entre as variáveis.
+
+**Insight:**
+
+- Há uma correlação positiva fraca entre o número de inscritos e a média de mensagens por transmissão, com R² de 0,11, indicando que apenas 11% da variabilidade nas mensagens pode ser explicada pelos inscritos.
+- Canais com mais inscritos tendem a ter médias de mensagens mais altas, mas a dispersão sugere que outros fatores (ex.: conteúdo ou interação do streamer) influenciam fortemente o engajamento.
 
 ---
 
