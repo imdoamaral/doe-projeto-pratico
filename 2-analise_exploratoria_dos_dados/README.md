@@ -11,7 +11,7 @@
   - Verificação de distribuição teórica dos dados
 
 ### 1.2 Atualizações
-- **Relevância/Timing:** No início de junho, o artigo ganhou mais relevância após a condenação de um famoso humorista adepto do humor politicamente incorreto.
+- **Relevância/Timing:** No início de junho, o projeto ganhou mais relevância após a condenação de um famoso humorista adepto do humor politicamente incorreto.
 
   ![](captura_tela_condenacao_leo_lins.png)
 
