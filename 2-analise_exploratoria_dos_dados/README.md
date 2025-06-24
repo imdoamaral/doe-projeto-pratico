@@ -6,7 +6,7 @@
 - Entender como um classificador de toxicidade do estado da arte classifica os comentários desta sub comunidade.
 - Entender como um classificador lida com linguagem ambígua e codificada.
 - Expor possíveis riscos do discurso tóxico/ofensivo mascarado como humor.
-Contribuir para o entendimento dos limites do humor, moderação de conteúdo e liberdade de expressão.
+- Contribuir para o entendimento dos limites do humor, moderação de conteúdo e liberdade de expressão.
 
 
 ### 1.2 Atualizações
