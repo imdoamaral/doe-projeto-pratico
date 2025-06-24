@@ -3,15 +3,14 @@
 ## 1. Releitura dos objetivos com eventuais atualizações
 
 ### 1.1 Objetivos da Análise
-- Compreender padrões de comportamento nos chats ao vivo, antes da aplicação de modelos de linguagem.
-  - Análise do vocabulário (palavras mais frequentes)
-  - Comparação entre canais grandes e pequenos
-  - Comparação entre streamers homens e mulheres
-  - Distribuição estatística das variáveis numéricas
-  - Verificação de distribuição teórica dos dados
+- Entender como um classificador de toxicidade do estado da arte classifica os comentários desta sub comunidade.
+- Entender como um classificador lida com linguagem ambígua e codificada.
+- Expor possíveis riscos do discurso tóxico/ofensivo mascarado como humor.
+Contribuir para o entendimento dos limites do humor, moderação de conteúdo e liberdade de expressão.
+
 
 ### 1.2 Atualizações
-- **Relevância/Timing:** No início de junho, o projeto ganhou mais relevância após a condenação de um famoso humorista adepto do humor politicamente incorreto.
+- **Relevância do tema/Timing:** No início de junho, o assunto ganhou mais relevância após a condenação de um famoso humorista adepto do humor politicamente incorreto.
 
   ![](captura_tela_condenacao_leo_lins.png)
 
