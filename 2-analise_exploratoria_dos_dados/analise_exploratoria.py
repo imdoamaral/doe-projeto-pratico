@@ -13,7 +13,7 @@ from nltk.corpus import stopwords
 # nltk.download('stopwords')
 
 # Carrega dataset
-df = pd.read_csv("dataset_unificado.csv")
+df = pd.read_csv("/home/israel/Documentos/GitHub/dataset_unificado.csv")
 df['canal'] = df['canal'].astype(str).str.strip()
 
 # Calcula o tamanho de cada mensagem (em caracteres)
@@ -26,96 +26,208 @@ mensagens_por_live = mensagens_por_live.merge(canal_por_live, on='id_video')
 mensagens_por_live = mensagens_por_live[mensagens_por_live['quantidade_mensagens'] > 0]
 df = df.merge(mensagens_por_live[['id_video', 'quantidade_mensagens']], on='id_video', how='left')
 
-# HISTOGRAMA - MENSAGENS POR LIVE
-plt.hist(mensagens_por_live['quantidade_mensagens'])
-plt.title("Histograma da quantidade de mensagens por transmissão")
-plt.xlabel("Quantidade de mensagens")
-plt.ylabel("Frequência")
-plt.xlim(left=0)
-plt.ylim(bottom=0)
-plt.grid(False)
-plt.tight_layout()
-plt.savefig("histograma_mensagens_por_live.png", dpi=300)
-plt.close()
+# # HISTOGRAMA - MENSAGENS POR LIVE
+# plt.hist(mensagens_por_live['quantidade_mensagens'])
+# plt.title("Histograma da quantidade de mensagens por transmissão")
+# plt.xlabel("Quantidade de mensagens")
+# plt.ylabel("Frequência")
+# plt.xlim(left=0)
+# plt.ylim(bottom=0)
+# plt.grid(False)
+# plt.tight_layout()
+# plt.savefig("histograma_mensagens_por_live.png", dpi=300)
+# plt.close()
 
-# BOXPLOT - MENSAGENS POR CANAL
-canais = mensagens_por_live['canal'].unique()
-dados_por_canal = [
-    mensagens_por_live[mensagens_por_live['canal'] == canal]['quantidade_mensagens']
-    for canal in canais
-]
-medianas = [dados_por_canal[i].median() for i in range(len(canais))]
-canais_ordenados = [canais[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
-dados_ordenados = [dados_por_canal[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
-plt.boxplot(dados_ordenados, tick_labels=canais_ordenados)
-plt.title("Boxplot da quantidade de mensagens por canal")
-plt.xlabel("Canal")
-plt.ylabel("Mensagens por transmissão")
-plt.ylim(bottom=0)
-plt.grid(axis='y', linestyle='dashed')
-plt.grid(axis='x', visible=False)
-plt.xticks(ticks=range(1, len(canais_ordenados) + 1), labels=canais_ordenados, rotation=45, ha='right', va='top')
-plt.tight_layout()
-plt.savefig("boxplot_mensagens_por_canal.png", dpi=300)
-plt.close()
+# # BOXPLOT - MENSAGENS POR CANAL
+# canais = mensagens_por_live['canal'].unique()
+# dados_por_canal = [
+#     mensagens_por_live[mensagens_por_live['canal'] == canal]['quantidade_mensagens']
+#     for canal in canais
+# ]
+# medianas = [dados_por_canal[i].median() for i in range(len(canais))]
+# canais_ordenados = [canais[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
+# dados_ordenados = [dados_por_canal[i] for i in sorted(range(len(medianas)), key=lambda x: medianas[x], reverse=True)]
+# plt.boxplot(dados_ordenados, tick_labels=canais_ordenados)
+# plt.title("Boxplot da quantidade de mensagens por canal")
+# plt.xlabel("Canal")
+# plt.ylabel("Mensagens por transmissão")
+# plt.ylim(bottom=0)
+# plt.grid(axis='y', linestyle='dashed')
+# plt.grid(axis='x', visible=False)
+# plt.xticks(ticks=range(1, len(canais_ordenados) + 1), labels=canais_ordenados, rotation=45, ha='right', va='top')
+# plt.tight_layout()
+# plt.savefig("boxplot_mensagens_por_canal.png", dpi=300)
+# plt.close()
 
-# HEATMAP - MENSAGENS POR CANAL E DIA
-df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-df['dia'] = df['timestamp'].dt.date
-mensagens_por_dia = df.groupby(['canal', 'dia']).size().reset_index(name='quantidade_mensagens')
-pivot_data = mensagens_por_dia.pivot(index='canal', columns='dia', values='quantidade_mensagens').fillna(0)
+# # HEATMAP - MENSAGENS POR CANAL E DIA
+# df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+# df['dia'] = df['timestamp'].dt.date
+# mensagens_por_dia = df.groupby(['canal', 'dia']).size().reset_index(name='quantidade_mensagens')
+# pivot_data = mensagens_por_dia.pivot(index='canal', columns='dia', values='quantidade_mensagens').fillna(0)
 
-plt.figure()
-plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
-plt.title('Densidade de mensagens por canal e dia')
-plt.xlabel('Dia')
-plt.ylabel('Canal')
-plt.xticks(ticks=range(len(pivot_data.columns)), 
-           labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
-           rotation=45, ha='right')
-plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
-plt.colorbar(label='Quantidade de mensagens')
-plt.tight_layout()
-plt.savefig("heatmap_mensagens_por_canal_dia_corrigido.png", dpi=300)
-plt.close()
+# plt.figure()
+# plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
+# plt.title('Densidade de mensagens por canal e dia')
+# plt.xlabel('Dia')
+# plt.ylabel('Canal')
+# plt.xticks(ticks=range(len(pivot_data.columns)), 
+#            labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
+#            rotation=45, ha='right')
+# plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
+# plt.colorbar(label='Quantidade de mensagens')
+# plt.tight_layout()
+# plt.savefig("heatmap_mensagens_por_canal_dia_corrigido.png", dpi=300)
+# plt.close()
 
-# HEATMAP - TAMANHO MÉDIO DAS MENSAGENS (CONTEXTO GLOBAL)
-df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601', utc=True)
-tz_local = pytz.timezone('America/Sao_Paulo')
-df['timestamp_local'] = df['timestamp'].dt.tz_convert(tz_local)
-tamanho_medio_por_dia = df.groupby(['canal', df['timestamp_local'].dt.date])['tamanho_mensagem'].mean().reset_index()
-pivot_data = tamanho_medio_por_dia.pivot(index='canal', columns='timestamp_local', values='tamanho_mensagem').fillna(0)
+# # HEATMAP - TAMANHO MÉDIO DAS MENSAGENS (CONTEXTO GLOBAL)
+# df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601', utc=True)
+# tz_local = pytz.timezone('America/Sao_Paulo')
+# df['timestamp_local'] = df['timestamp'].dt.tz_convert(tz_local)
+# tamanho_medio_por_dia = df.groupby(['canal', df['timestamp_local'].dt.date])['tamanho_mensagem'].mean().reset_index()
+# pivot_data = tamanho_medio_por_dia.pivot(index='canal', columns='timestamp_local', values='tamanho_mensagem').fillna(0)
 
-plt.figure()
-plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
-plt.title('Tamanho médio das mensagens por canal e dia')
-plt.xlabel('Dia')
-plt.ylabel('Canal')
-# LINHA CORRIGIDA: ha='right'
-plt.xticks(ticks=range(len(pivot_data.columns)), 
-           labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
-           rotation=45, ha='right')
-plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
-plt.colorbar(label='Tamanho médio (caracteres)')
-plt.tight_layout()
-plt.savefig("heatmap_tamanho_medio_mensagens_corrigido.png", dpi=300)
-plt.close()
+# plt.figure()
+# plt.imshow(pivot_data, aspect='auto', cmap='YlOrRd')
+# plt.title('Tamanho médio das mensagens por canal e dia')
+# plt.xlabel('Dia')
+# plt.ylabel('Canal')
+# plt.xticks(ticks=range(len(pivot_data.columns)), 
+#            labels=[f"{pd.to_datetime(d).day:02d}/{pd.to_datetime(d).month:02d}" for d in pivot_data.columns], 
+#            rotation=45, ha='right')
+# plt.yticks(ticks=range(len(pivot_data.index)), labels=pivot_data.index)
+# plt.colorbar(label='Tamanho médio (caracteres)')
+# plt.tight_layout()
+# plt.savefig("heatmap_tamanho_medio_mensagens_corrigido.png", dpi=300)
+# plt.close()
 
 # WORDCLOUD - PALAVRAS MAIS FREQUENTES
-texto_completo = ' '.join(df['mensagem'].dropna().astype(str).tolist())
+
+import re
+
+# ==============================================================================
+#                  DEFINIÇÃO DA LISTA DE STOPWORDS CUSTOMIZADAS
+# ==============================================================================
+# Carrega a lista padrão de stopwords do NLTK.
 stop_words = set(stopwords.words('portuguese'))
+
+# ------------------------------------------------------------------------------
+# CATEGORIA 1: Conectivos e Palavras de Ligação (Artigos, Preposições, etc.)
+# ------------------------------------------------------------------------------
+stopwords_conectivos = [
+    'pra', 'pro', 'pa', 'q', 'so', 'la', 'lá', 'aí', 'ai', 'entao', 'então', 'assim',
+    'aqui', 'tudo', 'nada', 'coisa', 'coisas', 'todo', 'toda'
+]
+
+# ------------------------------------------------------------------------------
+# CATEGORIA 2: Verbos Comuns e Conjugações
+# ------------------------------------------------------------------------------
+stopwords_verbos = [
+    'ser', 'fazer', 'ir', 'ter', 'dar', 'ver', 'quer', 'dizer', 'falar', 'saber',
+    'ficar', 'poder', 'parecer', 'achar', 'comer', 'jogar', 'manda', 'tira', 'pega',
+    'vem', 'sai', 'deve', 'acha', 'faz', 'vai', 'tá', 'ta', 'to', 'tô', 'ia', 'era',
+    'foi', 'vou', 'falou', 'ficou', 'tava', 'ficar', 'falaro', 'olha', 'toma',
+    'parece', 'fala', 'pode', 'come', 'fica', 'sabe', 'quero', 'joga'
+]
+
+# ------------------------------------------------------------------------------
+# CATEGORIA 3: Adjetivos, Advérbios e Qualificadores Genéricos
+# ------------------------------------------------------------------------------
+stopwords_adjetivos_adverbios = [
+    'bom', 'boa', 'ruim', 'melhor', 'pior', 'maior', 'menor', 'novo', 'real', 'igual',
+    'bem', 'mal', 'agora', 'hoje', 'hj', 'ainda', 'nunca', 'sempre', 'demais', 'cedo',
+    'noite', 'dia', 'anos', 'quanto', 'linda', 'gostoso', 'podre', 'cade',
+    'ja' # <--- MOVIDA DA CAT 1
+]
+
+# ------------------------------------------------------------------------------
+# CATEGORIA 4: Interjeições, Saudações e Gírias de Interação
+# ------------------------------------------------------------------------------
+stopwords_interjeicoes_girias = [
+    'oi', 'opa', 'eita', 'ah', 'oxi', 'oops', 'sim', 'nao', 'mano', 'cara', 'mané',
+    'mlk', 'brabo', 'salve', 'né', 'ne', 'vc', 'mt', 'pq', 'po', 'koe', 'koeee', 'ae',
+    'mds', 'tbm', 'gente'
+]
+
+# ------------------------------------------------------------------------------
+# CATEGORIA 5: Ofensas e Palavrões Comuns
+# ------------------------------------------------------------------------------
+stopwords_ofensas = [
+    'pqp', 'porra', 'merda', 'caralho', 'poha', 'fds', 'krl', 'foda', 'lixeiro'
+]
+
+# ------------------------------------------------------------------------------
+# CATEGORIA 6: Palavras de Contexto (REMOÇÃO ESTRATÉGICA)
+# ------------------------------------------------------------------------------
+stopwords_contexto_geral = [
+    'live', 'jogo', 'jogos', 'games', 'chat', 'video', 'canal', 'ban'
+]
+stopwords_contexto_topicos = [
+    'filme', 'filmin', 'música', 'musica', 'dinheiro', 'reais', 'medo'
+]
+stopwords_contexto_streamers = [
+    'renan', 'luan', 'renanplay', 'biah', 'cavalo', 'sheipado', 'sheypado',
+    'shey', 'shei', 'manso', 'nobre', 'pesco', 'rica', 'cioba', 'tapa', 'américa'
+]
+
+# ------------------------------------------------------------------------------
+# CATEGORIA 7: Miscelânea e Termos em Outros Idiomas
+# ------------------------------------------------------------------------------
+stopwords_misc = [
+    'https', 'the', 'of', 'resto', 'calma', 'nome'
+]
+
+# ------------------------------------------------------------------------------
+#                JUNTANDO TODAS AS CATEGORIAS E ATUALIZANDO
+# ------------------------------------------------------------------------------
+# Junta todas as listas de categorias em uma única lista final.
+custom_stop_words = (
+    stopwords_conectivos +
+    stopwords_verbos +
+    stopwords_adjetivos_adverbios +
+    stopwords_interjeicoes_girias +
+    stopwords_ofensas +
+    stopwords_contexto_geral +
+    stopwords_contexto_topicos +
+    stopwords_contexto_streamers +
+    stopwords_misc
+)
+
+# Adiciona a sua lista customizada ao conjunto principal de stopwords do NLTK.
+# Usar 'update' em um 'set' já garante que não haverá palavras duplicadas.
+stop_words.update(custom_stop_words)
+
+print(f"Lista de stopwords customizadas carregada e organizada. Total de {len(custom_stop_words)} palavras adicionadas.")
+
+texto_completo = ' '.join(df['mensagem'].dropna().astype(str).tolist())
 palavras = word_tokenize(texto_completo.lower())
-palavras_filtradas = [palavra for palavra in palavras if palavra.isalpha() and len(palavra) > 1 and palavra not in stop_words]
+
+palavras_filtradas = []
+for palavra in palavras:
+    if re.fullmatch(r'k{2,}', palavra):
+        continue
+
+    if palavra.isalpha() and len(palavra) > 1 and palavra not in stop_words:
+        palavras_filtradas.append(palavra)
+
+# Geração da WordCloud (sem alterações)
 frequencia_palavras = nltk.FreqDist(palavras_filtradas)
-wordcloud = WordCloud(width=1200, height=600, background_color='white', min_font_size=10, colormap='Dark2').generate_from_frequencies(frequencia_palavras)
+wordcloud = WordCloud(
+    width=1200, 
+    height=600, 
+    background_color='white', 
+    min_font_size=10, 
+    colormap='Dark2'
+).generate_from_frequencies(frequencia_palavras)
+
 plt.figure(figsize=(12, 6))
-# plt.imshow(wordcloud, interpolation='bilinear')
-# plt.axis('off')
-# plt.tight_layout()
-# plt.savefig("nuvem_palavras_chats.png", dpi=600)
-# plt.close()
-# print("10 palavras mais frequentes:")
-# print(frequencia_palavras.most_common(10))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis('off')
+plt.tight_layout()
+plt.savefig("nuvem_palavras_final.png", dpi=600)
+plt.close()
+
+print("10 palavras mais frequentes (após a limpeza final):")
+print(frequencia_palavras.most_common(10))
 
 # # PMF - DISTRIBUIÇÃO DE MENSAGENS POR USUÁRIO
 # mensagens_por_usuario = df.groupby('autor').size().reset_index(name='quantidade_mensagens')

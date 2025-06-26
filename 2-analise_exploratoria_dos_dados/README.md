@@ -1,4 +1,4 @@
-# Análise Exploratória (de Chats de Transmissões ao Vivo no Youtube)
+# Análise Exploratória
 
 ## 1. Releitura dos objetivos com eventuais atualizações
 
@@ -14,7 +14,7 @@
 
   ![](captura_tela_condenacao_leo_lins.png)
 
-- **Título mais descritivo:** “Análise de chats de transmissões ao vivo no Youtube em uma sub comunidade gamer de humor negro”
+- **Título alternativo:** “Análise de chats de transmissões ao vivo no Youtube em uma sub comunidade gamer de humor negro”
 - **Metadados:** o script de captura de chat foi atualizado para coletar mais campos (likes, visualizaçoes e comentarios pós-live).
 - **Considerações sobre o comentário do colega Richard, na minha primeira apresentação:**
   - Na ocasião, ele propôs uma boa reflexão: “As expressões veladas/códigos da comunidade seriam tratados como texto tóxico ou não?”
@@ -166,29 +166,34 @@
 
 ---
 
-### Análise 7: Nuvem de palavras mais frequentes nos chats
+### Análise 7: Nuvem de palavras mais frequentes nos chats (Análise Refinada)
 
-![Nuvem de Palavras](nuvem_palavras_chats.png)
+Após a criação de uma lista de *stopwords* customizada e agressiva (com 168 palavras), foi possível remover o ruído superficial (como "jogo", "live", nomes de streamers) e revelar os termos que caracterizam a cultura e a linguagem interna das comunidades analisadas.
 
-### Tabela: 10 Palavras Mais Frequentes
+![Nuvem de Palavras Refinada](nuvem_palavras_final.png)
 
-| Palavra         | Frequência |
-|-----------------|------------|
-| pra             | 5.206      |
-| vai             | 5.047      |
-| ai              | 3.695      |
-| renan           | 3.518      |
-| kkkkkkkkkkkkkkkk| 3.102      |
-| opa             | 2.930      |
-| live            | 2.887      |
-| tá              | 2.881      |
-| jogo            | 2.636      |
-| sheipado        | 2.597      |
+### Tabela: 10 Palavras Mais Frequentes (Após Limpeza)
+
+| Palavra | Frequência |
+| :--- | :--- |
+| cp | 2093 |
+| gay | 1051 |
+| mulher | 845 |
+| msol | 731 |
+| lixo | 670 |
+| pai | 588 |
+| burro | 582 |
+| ri | 573 |
+| humor | 530 |
+| deus | 525 |
 
 **Insight:**
 
-- A nuvem e a tabela revelam um tom casual e centrado em gaming, com destaque para humor ("kkkkkkkkkkkkkkkk") e menções a streamers, indicando a influência de figuras específicas na interação da comunidade.
-- Apenas um expressão velada teve destaque ("CP" - dentro da letra "a" da palavra "pra")
+- A análise refinada vai muito além do tom casual de gaming. A remoção estratégica de stopwords revelou os verdadeiros pilares da comunicação nessas comunidades, que incluem:
+    - **Códigos e Gírias Internas:** A alta frequência de `cp` e `msol` confirma a existência de uma linguagem codificada, compreendida apenas pelos membros da subcultura.
+    - **Identidade e Temas Sociais:** Palavras como `gay`, `mulher`, `pai` e `deus` são extremamente frequentes, indicando que as conversas giram em torno de identidade, gênero, relações familiares e até religião, temas muito mais profundos do que o esperado.
+    - **Tom Conflituoso:** A presença massiva de termos pejorativos como `lixo` e `burro` no topo da lista aponta para uma cultura de confronto, "trollagem" ou um humor agressivo como parte central da interação.
+    - **Humor como Conceito:** Em vez de risadas (`kkk`), agora aparecem as palavras `humor` e `ri`, mostrando que o tema ainda é relevante, mas de uma forma mais conceitual na análise.
 
 ---
 
