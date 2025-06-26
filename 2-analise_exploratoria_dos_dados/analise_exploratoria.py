@@ -100,27 +100,19 @@ df = df.merge(mensagens_por_live[['id_video', 'quantidade_mensagens']], on='id_v
 # plt.savefig("heatmap_tamanho_medio_mensagens_corrigido.png", dpi=300)
 # plt.close()
 
-# WORDCLOUD - PALAVRAS MAIS FREQUENTES
-
+# WORDCLOUD - PALAVRAS MAIS FREQUENTES NOS CHATS
 import re
 
-# ==============================================================================
-#                  DEFINIÇÃO DA LISTA DE STOPWORDS CUSTOMIZADAS
-# ==============================================================================
 # Carrega a lista padrão de stopwords do NLTK.
 stop_words = set(stopwords.words('portuguese'))
 
-# ------------------------------------------------------------------------------
 # CATEGORIA 1: Conectivos e Palavras de Ligação (Artigos, Preposições, etc.)
-# ------------------------------------------------------------------------------
 stopwords_conectivos = [
     'pra', 'pro', 'pa', 'q', 'so', 'la', 'lá', 'aí', 'ai', 'entao', 'então', 'assim',
     'aqui', 'tudo', 'nada', 'coisa', 'coisas', 'todo', 'toda'
 ]
 
-# ------------------------------------------------------------------------------
 # CATEGORIA 2: Verbos Comuns e Conjugações
-# ------------------------------------------------------------------------------
 stopwords_verbos = [
     'ser', 'fazer', 'ir', 'ter', 'dar', 'ver', 'quer', 'dizer', 'falar', 'saber',
     'ficar', 'poder', 'parecer', 'achar', 'comer', 'jogar', 'manda', 'tira', 'pega',
@@ -129,9 +121,7 @@ stopwords_verbos = [
     'parece', 'fala', 'pode', 'come', 'fica', 'sabe', 'quero', 'joga'
 ]
 
-# ------------------------------------------------------------------------------
 # CATEGORIA 3: Adjetivos, Advérbios e Qualificadores Genéricos
-# ------------------------------------------------------------------------------
 stopwords_adjetivos_adverbios = [
     'bom', 'boa', 'ruim', 'melhor', 'pior', 'maior', 'menor', 'novo', 'real', 'igual',
     'bem', 'mal', 'agora', 'hoje', 'hj', 'ainda', 'nunca', 'sempre', 'demais', 'cedo',
@@ -139,25 +129,19 @@ stopwords_adjetivos_adverbios = [
     'ja' # <--- MOVIDA DA CAT 1
 ]
 
-# ------------------------------------------------------------------------------
 # CATEGORIA 4: Interjeições, Saudações e Gírias de Interação
-# ------------------------------------------------------------------------------
 stopwords_interjeicoes_girias = [
     'oi', 'opa', 'eita', 'ah', 'oxi', 'oops', 'sim', 'nao', 'mano', 'cara', 'mané',
     'mlk', 'brabo', 'salve', 'né', 'ne', 'vc', 'mt', 'pq', 'po', 'koe', 'koeee', 'ae',
     'mds', 'tbm', 'gente'
 ]
 
-# ------------------------------------------------------------------------------
 # CATEGORIA 5: Ofensas e Palavrões Comuns
-# ------------------------------------------------------------------------------
 stopwords_ofensas = [
     'pqp', 'porra', 'merda', 'caralho', 'poha', 'fds', 'krl', 'foda', 'lixeiro'
 ]
 
-# ------------------------------------------------------------------------------
 # CATEGORIA 6: Palavras de Contexto (REMOÇÃO ESTRATÉGICA)
-# ------------------------------------------------------------------------------
 stopwords_contexto_geral = [
     'live', 'jogo', 'jogos', 'games', 'chat', 'video', 'canal', 'ban'
 ]
@@ -169,16 +153,11 @@ stopwords_contexto_streamers = [
     'shey', 'shei', 'manso', 'nobre', 'pesco', 'rica', 'cioba', 'tapa', 'américa'
 ]
 
-# ------------------------------------------------------------------------------
 # CATEGORIA 7: Miscelânea e Termos em Outros Idiomas
-# ------------------------------------------------------------------------------
 stopwords_misc = [
     'https', 'the', 'of', 'resto', 'calma', 'nome'
 ]
 
-# ------------------------------------------------------------------------------
-#                JUNTANDO TODAS AS CATEGORIAS E ATUALIZANDO
-# ------------------------------------------------------------------------------
 # Junta todas as listas de categorias em uma única lista final.
 custom_stop_words = (
     stopwords_conectivos +
@@ -209,7 +188,7 @@ for palavra in palavras:
     if palavra.isalpha() and len(palavra) > 1 and palavra not in stop_words:
         palavras_filtradas.append(palavra)
 
-# Geração da WordCloud (sem alterações)
+# Geração da WordCloud
 frequencia_palavras = nltk.FreqDist(palavras_filtradas)
 wordcloud = WordCloud(
     width=1200, 
@@ -228,25 +207,6 @@ plt.close()
 
 print("10 palavras mais frequentes (após a limpeza final):")
 print(frequencia_palavras.most_common(10))
-
-# # PMF - DISTRIBUIÇÃO DE MENSAGENS POR USUÁRIO
-# mensagens_por_usuario = df.groupby('autor').size().reset_index(name='quantidade_mensagens')
-# mensagens_por_usuario = mensagens_por_usuario[mensagens_por_usuario['quantidade_mensagens'] > 0]
-# total_usuarios = len(mensagens_por_usuario)
-# mensagens_por_usuario['pmf'] = mensagens_por_usuario['quantidade_mensagens'] / total_usuarios
-# plt.hist(mensagens_por_usuario['quantidade_mensagens'], weights=mensagens_por_usuario['pmf'], bins=50, edgecolor='black')
-# plt.title('Distribuição de mensagens por usuário (PMF)')
-# plt.xlabel('Quantidade de mensagens por usuário')
-# plt.ylabel('Probabilidade')
-# plt.xlim(left=0)
-# plt.grid(False)
-# plt.tight_layout()
-# plt.savefig("distribuicao_mensagens_por_usuario.png", dpi=300)
-# plt.close()
-# quantil_95 = mensagens_por_usuario['quantidade_mensagens'].quantile(0.95)
-# superusuarios = mensagens_por_usuario[mensagens_por_usuario['quantidade_mensagens'] >= quantil_95]
-# print(f"Número de superusuários (top 5%): {len(superusuarios)}")
-# print(f"Quantidade mínima de mensagens para ser superusuário: {quantil_95}")
 
 # # TABELA - COMPARAÇÃO ENTRE CANAIS GRANDES E PEQUENOS
 # volume_medio_por_canal = df.groupby('canal')['quantidade_mensagens'].mean().reset_index()

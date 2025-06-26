@@ -212,22 +212,7 @@ Após a criação de uma lista de *stopwords* customizada e agressiva (com 168 p
 
 ---
 
-### Análise 9: Distribuição de mensagens por usuário (PMF)
-
-![Distribuição PMF](distribuicao_mensagens_por_usuario.png)  
-
-**O que mostra:**
-
-- No eixo X: número de mensagens enviadas por um usuário.
-- No eixo Y: a probabilidade (normalizada) de um usuário ter enviado aquela quantidade de mensagens.
-
-**Insight:**
-
-- A distribuição apresenta uma forte assimetria, com a maioria dos usuários enviando poucas mensagens e um pequeno grupo de superusuários contribuindo significativamente, sugerindo uma dinâmica de engajamento concentrada.
-
----
-
-### Análise 10: Verificação de Distribuição Teórica de quantidade_mensagens
+### Análise 9: Verificação de Distribuição Teórica de quantidade_mensagens
 
 ![](distribuicao_teorica_quantidade_mensagens.png)
 
@@ -242,7 +227,7 @@ Após a criação de uma lista de *stopwords* customizada e agressiva (com 168 p
 
 ---
 
-### Análise 11: Correlação entre Inscritos e Média de Mensagens por Transmissão
+### Análise 10: Correlação entre Inscritos e Média de Mensagens por Transmissão
 
 ![Correlação](correlacao_inscritos_mensagens.png)  
 
