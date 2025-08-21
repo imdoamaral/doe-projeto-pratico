@@ -32,7 +32,7 @@ class Logger(object):
         self.terminal.write(message)
         self.log.write(message)
 
-    def flush():
+    def flush(self):
         self.terminal.flush()
         self.log.flush()
 
