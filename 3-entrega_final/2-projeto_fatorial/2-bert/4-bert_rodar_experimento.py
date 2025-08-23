@@ -4,6 +4,9 @@ Script final para o experimento fatorial com BERT.
 
 Executa N repetições de Bootstrap do treinamento e calcula o F1-Score médio.
 Pode ser configurado para rodar com dados 'bruto' ou 'padrao'.
+
+Os caminhos para os arquivos de dados e de log são definidos dinamicamente
+com base na localização do script e incluem um timestamp para evitar sobreescrita.
 """
 # --------------------------------------------------------------------------
 # 1. IMPORTAÇÃO DAS BIBLIOTECAS
@@ -15,6 +18,7 @@ import pandas as pd
 import torch
 import numpy as np
 import re
+import os
 from torch.optim import AdamW
 from transformers import BertTokenizer, BertForSequenceClassification, get_linear_schedule_with_warmup
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
@@ -29,14 +33,28 @@ from math import isfinite
 # --------------------------------------------------------------------------
 
 # !! INTERRUPTOR PRINCIPAL !! Altere entre 'bruto' e 'padrao' para cada execução.
-TIPO_PREPROCESSAMENTO = 'bruto'
+TIPO_PREPROCESSAMENTO = 'padrao'
 
-# Parâmetros do dataset e do modelo
-NOME_ARQUIVO_DADOS = 'amostra_rotulada.csv'
+# --- Definição dinâmica dos caminhos dos arquivos ---
+# Descobre o caminho absoluto do diretório onde o script está localizado
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Define os nomes base dos arquivos
+nome_arquivo_csv = 'amostra_rotulada.csv'
+
+# Cria um timestamp para garantir que o nome do log seja único
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+nome_arquivo_log = f'log_bert_{TIPO_PREPROCESSAMENTO}_{timestamp}.txt'
+
+# Constrói o caminho completo para os arquivos
+NOME_ARQUIVO_DADOS = os.path.join(script_dir, nome_arquivo_csv)
+ARQUIVO_DE_LOG = os.path.join(script_dir, nome_arquivo_log)
+# --- Fim da seção de caminhos dinâmicos ---
+
+# Parâmetros do modelo
 NOME_COLUNA_TEXTO = 'mensagem'
 NOME_COLUNA_ROTULO = 'classificacao_binaria'
 NOME_MODELO_BERT = 'neuralmind/bert-base-portuguese-cased'
-ARQUIVO_DE_LOG = f'log_experimento_bert_{TIPO_PREPROCESSAMENTO}.txt'
 
 # Parâmetros de treinamento e do experimento
 MAX_LENGTH = 128
@@ -44,7 +62,7 @@ BATCH_SIZE = 16
 TEST_SIZE = 0.15
 RANDOM_STATE = 42
 EPOCHS = 3
-N_REPLICACOES = 50 # Número de repetições do Bootstrap
+N_REPLICACOES = 30 # Número de repetições do Bootstrap. Sugestão do professor: 50
 
 # --------------------------------------------------------------------------
 # 3. CLASSES E FUNÇÕES AUXILIARES
@@ -53,7 +71,7 @@ class Logger(object):
     """Classe para redirecionar a saída (print) para o terminal e um arquivo de log."""
     def __init__(self, filename="log.txt"):
         self.terminal = sys.stdout
-        self.log = open(filename, "a", encoding='utf-8')
+        self.log = open(filename, "w", encoding='utf-8') # Usa 'w' (write) para criar um novo arquivo sempre
     def write(self, message):
         self.terminal.write(message); self.log.write(message)
     def flush(self):
@@ -74,8 +92,6 @@ def treinar_e_avaliar(df_amostra: pd.DataFrame, device: torch.device) -> float:
     textos = df_amostra[NOME_COLUNA_TEXTO].astype(str).tolist()
     rotulos = df_amostra[NOME_COLUNA_ROTULO].tolist()
 
-    # Carrega o tokenizador específico do modelo. 'do_lower_case=False' é importante
-    # pois estamos usando um modelo 'cased' que diferencia maiúsculas de minúsculas.
     tokenizer = BertTokenizer.from_pretrained(NOME_MODELO_BERT, do_lower_case=False)
     
     encoded_data = tokenizer.batch_encode_plus(
@@ -84,14 +100,11 @@ def treinar_e_avaliar(df_amostra: pd.DataFrame, device: torch.device) -> float:
     )
     input_ids, attention_masks, labels = encoded_data['input_ids'], encoded_data['attention_mask'], torch.tensor(rotulos)
 
-    # Divisão em treino e validação. 'stratify=labels' garante que a proporção
-    # de classes seja a mesma em ambos os conjuntos, crucial para dados desbalanceados.
     train_inputs, val_inputs, train_labels, val_labels, train_masks, val_masks = train_test_split(
         input_ids, labels, attention_masks, random_state=RANDOM_STATE,
         test_size=TEST_SIZE, stratify=labels
     )
 
-    # Criação dos DataLoaders para carregar os dados em lotes
     train_data = TensorDataset(train_inputs, train_masks, train_labels)
     train_sampler = RandomSampler(train_data)
     train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=BATCH_SIZE)
@@ -100,24 +113,20 @@ def treinar_e_avaliar(df_amostra: pd.DataFrame, device: torch.device) -> float:
     val_sampler = SequentialSampler(val_data)
     val_dataloader = DataLoader(val_data, sampler=val_sampler, batch_size=BATCH_SIZE)
 
-    # Carrega o modelo BERT pré-treinado com uma cabeça de classificação
     model = BertForSequenceClassification.from_pretrained(
         NOME_MODELO_BERT, num_labels=2, output_attentions=False, output_hidden_states=False,
     )
-    model.to(device) # Envia o modelo para a GPU (ou CPU)
+    model.to(device)
 
-    # Define o otimizador e o agendador da taxa de aprendizado
     optimizer = AdamW(model.parameters(), lr=2e-5, eps=1e-8)
     total_steps = len(train_dataloader) * EPOCHS
     scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=total_steps)
     
     best_f1_score = 0.0
 
-    # Loop de treinamento por N épocas
     for epoch_i in range(EPOCHS):
         print(f"\n---- Época {epoch_i + 1}/{EPOCHS} ----")
 
-        # --- Treinamento ---
         model.train()
         train_loss = 0.0
         for batch in train_dataloader:
@@ -137,7 +146,6 @@ def treinar_e_avaliar(df_amostra: pd.DataFrame, device: torch.device) -> float:
 
         avg_train_loss = train_loss / len(train_dataloader)
 
-        # --- Validação ---
         model.eval()
         val_loss = 0.0
         all_preds, all_labels = [], []
@@ -175,16 +183,19 @@ def treinar_e_avaliar(df_amostra: pd.DataFrame, device: torch.device) -> float:
 # --------------------------------------------------------------------------
 def main():
     """Função principal que orquestra a execução do experimento."""
-    df_original = pd.read_csv(NOME_ARQUIVO_DADOS)
-    
-    # Aplica o pré-processamento condicionalmente
+    try:
+        df_original = pd.read_csv(NOME_ARQUIVO_DADOS)
+    except FileNotFoundError:
+        print(f"ERRO: O arquivo de dados '{os.path.basename(NOME_ARQUIVO_DADOS)}' não foi encontrado.")
+        print(f"Por favor, certifique-se de que ele está na mesma pasta que o script.")
+        return # Encerra o script se o arquivo de dados não for encontrado
+
     print(f"Modo de pré-processamento selecionado: '{TIPO_PREPROCESSAMENTO}'")
     if TIPO_PREPROCESSAMENTO == 'padrao':
         print("Aplicando pré-processamento padrão na coluna de mensagens...")
         df_original[NOME_COLUNA_TEXTO] = df_original[NOME_COLUNA_TEXTO].apply(preprocessamento_padrao)
         print("Pré-processamento aplicado com sucesso.\n")
     
-    # Define o dispositivo de hardware (GPU ou CPU)
     if torch.cuda.is_available():
         device = torch.device("cuda")
         print(f'Usando GPU: {torch.cuda.get_device_name(0)}\n')
@@ -196,15 +207,12 @@ def main():
     
     print(f"--- Iniciando {N_REPLICACOES} repetições de Bootstrap ---")
     
-    # Loop principal do Bootstrap
     for i in range(N_REPLICACOES):
         t0 = time.time()
         print(f"\n--- Repetição {i + 1}/{N_REPLICACOES} ---")
         
-        # Gera uma nova amostra dos dados com reposição
         amostra_bootstrap = resample(df_original, replace=True, n_samples=len(df_original), random_state=i)
         
-        # Roda o ciclo completo de treino e avaliação para a amostra
         melhor_f1 = treinar_e_avaliar(amostra_bootstrap, device)
         lista_de_f1_scores.append(melhor_f1)
         
@@ -212,7 +220,6 @@ def main():
         print(f"Melhor F1-Score da repetição: {melhor_f1:.4f}")
         print(f"Tempo da repetição: {tempo_da_replica}")
 
-    # Consolidação e apresentação dos resultados finais
     f1_medio = np.mean(lista_de_f1_scores)
     f1_std = np.std(lista_de_f1_scores)
     
@@ -224,7 +231,7 @@ def main():
     print(f"Número de Replicações: {N_REPLICACOES}")
     print(f"F1-Scores individuais (arredondado): {[round(f, 4) for f in lista_de_f1_scores]}")
     print("\n" + "-"*50)
-    print(f"F1-SCORE MÉDIO (MACRO): {f1_medio:.4f}")
+    print(f"F1-SCORE MÉDIO (BINÁRIO, CLASSE 1): {f1_medio:.4f}")
     print(f"Desvio Padrão dos F1-Scores: {f1_std:.4f}")
     print("="*50)
 
@@ -232,10 +239,10 @@ def main():
 # 6. PONTO DE ENTRADA DO SCRIPT
 # --------------------------------------------------------------------------
 if __name__ == '__main__':
-    # Redireciona a saída (stdout) para o nosso logger antes de executar o main
+    # O Logger é inicializado aqui, usando o nome de arquivo dinâmico definido acima
     sys.stdout = Logger(ARQUIVO_DE_LOG)
     print(f"Iniciando execução do script: {datetime.datetime.now()}")
     print("-" * 30)
-    main() # Executa a função principal
+    main()
     print("-" * 30)
     print(f"Execução finalizada: {datetime.datetime.now()}")
