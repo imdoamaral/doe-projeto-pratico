@@ -62,7 +62,7 @@ BATCH_SIZE = 16
 TEST_SIZE = 0.15
 RANDOM_STATE = 42
 EPOCHS = 3
-N_REPLICACOES = 30 # Número de repetições do Bootstrap. Sugestão do professor: 50
+N_REPLICACOES = 30 # Número de repetições do Bootstrap. Sugestão do professor para experimentos futuros: utilizar valores maiores (50, 100...)
 
 # --------------------------------------------------------------------------
 # 3. CLASSES E FUNÇÕES AUXILIARES
