@@ -1,69 +1,75 @@
 # -*- coding: utf-8 -*-
 """
-Script para carregar o dataset rotulado, o modelo BERTimbau e seu tokenizador,
-e preparar os dados para o treinamento (fine-tuning).
-"""
+Script para carregar o dataset rotulado, o modelo BERTimbau, seu tokenizador,
+e preparar (tokenizar) os dados para o treinamento (fine-tuning).
 
+Este script é um passo de verificação para garantir que a preparação dos dados
+está funcionando como esperado antes de partir para o treinamento.
+"""
+# --------------------------------------------------------------------------
+# 1. IMPORTAÇÃO DAS BIBLIOTECAS
+# --------------------------------------------------------------------------
 import pandas as pd
 import torch
-from transformers import BertTokenizer, BertForSequenceClassification
+import os  # Importa a biblioteca 'os'
+from transformers import BertTokenizer
 
-# --- 1. CONFIGURAÇÕES ---
-# Nome do arquivo com os dados rotulados
-NOME_ARQUIVO_DADOS = 'amostra_rotulada.csv'
+# --------------------------------------------------------------------------
+# 2. CONFIGURAÇÕES GLOBAIS
+# --------------------------------------------------------------------------
+# --- Definição dinâmica dos caminhos dos arquivos ---
+script_dir = os.path.dirname(os.path.abspath(__file__))
+nome_arquivo_csv = 'amostra_rotulada.csv'
+NOME_ARQUIVO_DADOS = os.path.join(script_dir, nome_arquivo_csv)
 
-# Nome da coluna que contém os textos dos comentários
+# --- Parâmetros do modelo e colunas ---
 NOME_COLUNA_TEXTO = 'mensagem'
-
-# !! IMPORTANTE !!
-# Substitua pelo nome exato da coluna que contém os rótulos (0 ou 1)
 NOME_COLUNA_ROTULO = 'classificacao_binaria'
-
-# Nome do modelo BERT a ser usado (BERTimbau Cased)
 NOME_MODELO_BERT = 'neuralmind/bert-base-portuguese-cased'
 
-# Parâmetros da Tokenização
-MAX_LENGTH = 128 # Comprimento máximo das sentenças
+# --- Parâmetros da Tokenização ---
+MAX_LENGTH = 128  # Comprimento máximo das sentenças
 
-# --- 2. FUNÇÃO PRINCIPAL ---
+# --------------------------------------------------------------------------
+# 3. FUNÇÃO PRINCIPAL
+# --------------------------------------------------------------------------
 def preparar_dados():
     """
-    Função principal que executa todos os passos.
+    Função principal que executa todos os passos de carregamento e tokenização.
     """
     print("--- INÍCIO DA PREPARAÇÃO DOS DADOS PARA O BERT ---")
 
     # Carregar o dataset
     try:
-        print(f"\n[PASSO 1/4] Carregando o dataset '{NOME_ARQUIVO_DADOS}'...")
+        print(f"\n[PASSO 1/4] Carregando o dataset '{os.path.basename(NOME_ARQUIVO_DADOS)}'...")
         df = pd.read_csv(NOME_ARQUIVO_DADOS)
         print("Dataset carregado com sucesso!")
         print(f"O dataset tem {len(df)} linhas.")
     except FileNotFoundError:
-        print(f"ERRO: O arquivo '{NOME_ARQUIVO_DADOS}' não foi encontrado.")
-        print("Verifique se o arquivo está na mesma pasta que este script.")
+        print(f"\nERRO: O arquivo de dados '{os.path.basename(NOME_ARQUIVO_DADOS)}' não foi encontrado.")
+        print(f"Por favor, certifique-se de que ele está na mesma pasta que o script:")
+        print(f"-> {script_dir}")
         return
 
     # Verificar se as colunas necessárias existem
-    if NOME_COLUNA_TEXTO not in df.columns or NOME_COLUNA_ROTULO not in df.columns:
-        print(f"ERRO: Verifique os nomes das colunas no arquivo de configuração.")
-        print(f"Coluna de texto esperada: '{NOME_COLUNA_TEXTO}'")
-        print(f"Coluna de rótulo esperada: '{NOME_COLUNA_ROTULO}'")
-        print(f"Colunas encontradas no arquivo: {df.columns.tolist()}")
+    colunas_necessarias = [NOME_COLUNA_TEXTO, NOME_COLUNA_ROTULO]
+    if not all(col in df.columns for col in colunas_necessarias):
+        print("\nERRO: Uma ou mais colunas necessárias não foram encontradas no arquivo CSV.")
+        print(f"Colunas esperadas: {colunas_necessarias}")
+        print(f"Colunas encontradas: {df.columns.tolist()}")
         return
 
-    # Carregar o Tokenizador e o Modelo
-    print("\n[PASSO 2/4] Carregando o tokenizador e o modelo BERTimbau...")
+    # Carregar o Tokenizador
+    print("\n[PASSO 2/4] Carregando o tokenizador do BERTimbau...")
     try:
         tokenizer = BertTokenizer.from_pretrained(NOME_MODELO_BERT)
-        # Não precisamos carregar o modelo completo aqui, apenas para preparar os dados.
-        # Vamos carregá-lo de fato na etapa de treinamento.
         print("Tokenizador carregado com sucesso!")
     except Exception as e:
         print(f"ERRO ao carregar o tokenizador: {e}")
         return
 
     # Extrair textos e rótulos do DataFrame
-    textos = df[NOME_COLUNA_TEXTO].tolist()
+    textos = df[NOME_COLUNA_TEXTO].astype(str).tolist()
     rotulos = df[NOME_COLUNA_ROTULO].tolist()
 
     # Tokenizar os dados
@@ -75,14 +81,12 @@ def preparar_dados():
         padding='max_length',
         max_length=MAX_LENGTH,
         truncation=True,
-        return_tensors='pt' # Retorna como Tensores do PyTorch
+        return_tensors='pt'  # Retorna como Tensores do PyTorch
     )
 
     input_ids = encoded_data['input_ids']
     attention_masks = encoded_data['attention_mask']
-    # Converte a lista de rótulos para o formato de tensor
     labels = torch.tensor(rotulos)
-
     print("Tokenização completa!")
 
     # Verificação final
@@ -93,13 +97,14 @@ def preparar_dados():
 
     print("\n--- Exemplo da primeira frase processada ---")
     print(f"Texto Original: '{textos[0]}'")
-    # O método 'decode' do tokenizador faz o caminho inverso: transforma os IDs de volta em texto
-    print(f"Texto decodificado do tensor: '{tokenizer.decode(input_ids[0])}'")
+    print(f"Texto decodificado do tensor: '{tokenizer.decode(input_ids[0], skip_special_tokens=True)}'")
     print(f"Label: {labels[0]}")
 
     print("\n--- PREPARAÇÃO CONCLUÍDA COM SUCESSO ---")
 
 
-# --- PONTO DE ENTRADA DO SCRIPT ---
+# --------------------------------------------------------------------------
+# 4. PONTO DE ENTRADA DO SCRIPT
+# --------------------------------------------------------------------------
 if __name__ == '__main__':
     preparar_dados()
