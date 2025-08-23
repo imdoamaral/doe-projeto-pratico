@@ -1,237 +1,166 @@
 # -*- coding: utf-8 -*-
 """
-Script de treino de teste para o experimento com BERT.
-Passos:
-1. Carrega e tokeniza os dados.
-2. Divide os dados em conjuntos de treino e validação.
-3. Cria DataLoaders para alimentar o modelo de forma eficiente.
-4. Define e executa o loop de treinamento e validação.
-5. Salva toda a saída em um arquivo de log.
+Script de teste para uma ÚNICA execução de treinamento do modelo BERT.
+Este script serve para depuração e testes rápidos.
 """
+# --------------------------------------------------------------------------
+# 1. IMPORTAÇÃO DAS BIBLIOTECAS
+# --------------------------------------------------------------------------
 import sys
 import time
 import datetime
 import pandas as pd
 import torch
 import numpy as np
+import os
 from torch.optim import AdamW
 from transformers import BertTokenizer, BertForSequenceClassification, get_linear_schedule_with_warmup
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score
+from math import isfinite
 
-# --- CLASSE PARA GERAR O LOG ---
-# Esta classe redireciona toda a saída do print para um arquivo de log,
-# mantendo também a exibição no terminal. Essencial para registrar os resultados.
-class Logger(object):
-    def __init__(self, filename="log.txt"):
-        self.terminal = sys.stdout
-        self.log = open(filename, "a", encoding='utf-8')
+# --------------------------------------------------------------------------
+# 2. CONFIGURAÇÕES GLOBAIS
+# --------------------------------------------------------------------------
+# --- Definição dinâmica dos caminhos dos arquivos ---
+script_dir = os.path.dirname(os.path.abspath(__file__))
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    def write(self, message):
-        self.terminal.write(message)
-        self.log.write(message)
+NOME_ARQUIVO_DADOS = os.path.join(script_dir, 'amostra_rotulada.csv')
+ARQUIVO_DE_LOG = os.path.join(script_dir, f'log_teste_treino_unico_{timestamp}.txt')
 
-    def flush(self):
-        self.terminal.flush()
-        self.log.flush()
-
-# --- 1. CONFIGURAÇÕES GLOBAIS ---
-# Centraliza todos os parâmetros do experimento para fácil modificação.
-NOME_ARQUIVO_DADOS = 'amostra_rotulada.csv'
+# Parâmetros do modelo e colunas
 NOME_COLUNA_TEXTO = 'mensagem'
 NOME_COLUNA_ROTULO = 'classificacao_binaria'
-NOME_MODELO_BERT = 'neuralmind/bert-base-portuguese-cased' # Modelo pré-treinado para português do Brasil.
-ARQUIVO_DE_LOG = 'log_treinamento_bert.txt'
-MAX_LENGTH = 128      # Comprimento máximo das sentenças. Textos maiores serão truncados.
-BATCH_SIZE = 16       # Número de exemplos em cada lote de treinamento.
-TEST_SIZE = 0.15      # Proporção do dataset a ser usada para validação.
-RANDOM_STATE = 42     # Semente para reprodutibilidade dos resultados.
-EPOCHS = 3            # Número de vezes que o modelo verá todo o dataset de treino.
+NOME_MODELO_BERT = 'neuralmind/bert-base-portuguese-cased'
 
-# --- 2. FUNÇÕES AUXILIARES ---
+# Parâmetros de treinamento
+MAX_LENGTH = 128
+BATCH_SIZE = 16
+TEST_SIZE = 0.15
+RANDOM_STATE = 42
+EPOCHS = 3
+
+# --------------------------------------------------------------------------
+# 3. CLASSES E FUNÇÕES AUXILIARES
+# --------------------------------------------------------------------------
+class Logger(object):
+    """Redireciona a saída (print) para o terminal e um arquivo de log."""
+    def __init__(self, filename="log.txt"):
+        self.terminal = sys.stdout
+        self.log = open(filename, "w", encoding='utf-8')
+    def write(self, message):
+        self.terminal.write(message); self.log.write(message)
+    def flush(self):
+        self.terminal.flush(); self.log.flush()
+
 def format_time(elapsed):
     """Converte tempo em segundos para o formato hh:mm:ss."""
-    elapsed_rounded = int(round((elapsed)))
-    return str(datetime.timedelta(seconds=elapsed_rounded))
+    return str(datetime.timedelta(seconds=int(round(elapsed))))
 
-# --- 3. FUNÇÃO PARA CARREGAR E PREPARAR OS DADOS ---
-def preparar_e_organizar_dados():
-    """
-    Carrega os dados do CSV, tokeniza os textos usando o tokenizador do BERT
-    e organiza tudo em DataLoaders do PyTorch para treino e validação.
-    """
-    print("--- FASE 1: Carregando, preparando e organizando os dados ---")
+# --------------------------------------------------------------------------
+# 4. FUNÇÃO PRINCIPAL DO SCRIPT
+# --------------------------------------------------------------------------
+def main():
+    """Orquestra o carregamento dos dados, treinamento e validação do modelo."""
     
-    # Carrega o dataset a partir de um arquivo CSV.
-    df = pd.read_csv(NOME_ARQUIVO_DADOS)
+    # --- FASE 1: Carregamento e Preparação dos Dados ---
+    print("--- FASE 1: Carregando e preparando os dados ---")
+    try:
+        df = pd.read_csv(NOME_ARQUIVO_DADOS)
+    except FileNotFoundError:
+        print(f"ERRO: Arquivo '{os.path.basename(NOME_ARQUIVO_DADOS)}' não encontrado.")
+        print(f"Certifique-se de que ele está na pasta: {script_dir}")
+        return
+
     textos = df[NOME_COLUNA_TEXTO].astype(str).tolist()
     rotulos = df[NOME_COLUNA_ROTULO].tolist()
 
-    # Carrega o tokenizador específico do modelo BERT escolhido.
-    print(f"Carregando tokenizador do modelo: {NOME_MODELO_BERT}")
     tokenizer = BertTokenizer.from_pretrained(NOME_MODELO_BERT)
 
-    # Tokeniza todos os textos. `batch_encode_plus` é uma forma eficiente de processar múltiplos textos.
-    #   - `add_special_tokens=True`: Adiciona tokens especiais como [CLS] e [SEP].
-    #   - `return_attention_mask=True`: Gera a máscara de atenção para que o modelo ignore os paddings.
-    #   - `padding='max_length'`: Preenche sentenças menores que MAX_LENGTH com tokens de padding.
-    #   - `truncation=True`: Trunca sentenças maiores que MAX_LENGTH.
-    #   - `return_tensors='pt'`: Retorna os dados como tensores do PyTorch.
     encoded_data = tokenizer.batch_encode_plus(
         textos, add_special_tokens=True, return_attention_mask=True,
         padding='max_length', max_length=MAX_LENGTH, truncation=True, return_tensors='pt'
     )
+    input_ids, attention_masks, labels = encoded_data['input_ids'], encoded_data['attention_mask'], torch.tensor(rotulos)
 
-    input_ids = encoded_data['input_ids']
-    attention_masks = encoded_data['attention_mask']
-    labels = torch.tensor(rotulos)
-
-    # Divide os dados em conjuntos de treino e validação.
-    # `stratify=labels` garante que a proporção de classes seja a mesma nos dois conjuntos.
     train_inputs, val_inputs, train_labels, val_labels, train_masks, val_masks = train_test_split(
-        input_ids, labels, attention_masks, random_state=RANDOM_STATE,
-        test_size=TEST_SIZE, stratify=labels
+        input_ids, labels, attention_masks, random_state=RANDOM_STATE, test_size=TEST_SIZE, stratify=labels
     )
-
-    # Cria um TensorDataset, que é uma forma de agrupar os tensores de entrada, máscaras e rótulos.
+    
     train_data = TensorDataset(train_inputs, train_masks, train_labels)
-    # O RandomSampler seleciona os dados de forma aleatória para o treinamento, o que ajuda o modelo a generalizar.
     train_sampler = RandomSampler(train_data)
-    # O DataLoader organiza os dados em lotes (batches) para alimentar o modelo de forma eficiente.
     train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=BATCH_SIZE)
 
     val_data = TensorDataset(val_inputs, val_masks, val_labels)
-    # O SequentialSampler apenas percorre os dados de validação em ordem.
     val_sampler = SequentialSampler(val_data)
     val_dataloader = DataLoader(val_data, sampler=val_sampler, batch_size=BATCH_SIZE)
-
     print("Dados prontos e organizados em DataLoaders.\n")
-    return train_dataloader, val_dataloader
 
-# --- 4. FUNÇÃO PRINCIPAL DO SCRIPT ---
-def main():
-    """
-    Função principal que orquestra o treinamento e a validação do modelo.
-    """
-    train_dataloader, val_dataloader = preparar_e_organizar_dados()
+    # --- FASE 2: Treinamento e Validação ---
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f'Usando dispositivo: {device}\n')
 
-    # Verifica se uma GPU está disponível e a seleciona; caso contrário, usa a CPU.
-    # Treinar em GPU é significativamente mais rápido.
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-        print(f'Usando GPU: {torch.cuda.get_device_name(0)}\n')
-    else:
-        device = torch.device("cpu")
-        print('Nenhuma GPU encontrada, usando CPU.\n')
-
-    # Carrega o modelo BertForSequenceClassification pré-treinado.
-    # `num_labels=2` indica que é uma tarefa de classificação binária.
-    model = BertForSequenceClassification.from_pretrained(
-        NOME_MODELO_BERT, num_labels=2, output_attentions=False, output_hidden_states=False,
-    )
-    # Envia o modelo para o dispositivo selecionado (GPU ou CPU).
+    model = BertForSequenceClassification.from_pretrained(NOME_MODELO_BERT, num_labels=2)
     model.to(device)
 
-    # Otimizador AdamW é uma variação do Adam recomendada para modelos Transformer.
     optimizer = AdamW(model.parameters(), lr=2e-5, eps=1e-8)
-    
-    # O scheduler ajusta a taxa de aprendizado ao longo do treinamento,
-    # o que pode levar a uma convergência melhor e mais estável.
     total_steps = len(train_dataloader) * EPOCHS
     scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=total_steps)
 
     print(f"--- FASE 2: Iniciando o treinamento por {EPOCHS} épocas ---")
     
-    # Loop principal de treinamento.
     for epoch_i in range(0, EPOCHS):
         print(f'\n======== Época {epoch_i + 1} / {EPOCHS} ========')
-        print('Treinando...')
         t0 = time.time()
-        total_train_loss = 0
         
-        # Coloca o modelo em modo de treinamento.
+        # Treinamento
         model.train()
-
-        # Loop sobre cada lote de dados do DataLoader de treino.
-        for step, batch in enumerate(train_dataloader):
-            # Mostra o progresso a cada 40 lotes.
-            if step % 40 == 0 and not step == 0:
-                elapsed = format_time(time.time() - t0)
-                print(f'  Lote {step:>5} de {len(train_dataloader):>5}. Tempo: {elapsed}.')
-
-            # Desempacota o lote e envia os tensores para a GPU/CPU.
-            b_input_ids, b_input_mask, b_labels = batch[0].to(device), batch[1].to(device), batch[2].to(device)
-            
-            # Zera os gradientes calculados na iteração anterior.
-            model.zero_grad()
-            
-            # Forward pass: passa os dados pelo modelo para obter a saída (logits) e a perda (loss).
-            output = model(b_input_ids, token_type_ids=None, attention_mask=b_input_mask, labels=b_labels)
+        train_loss = 0
+        for batch in train_dataloader:
+            b_input_ids, b_input_mask, b_labels = [t.to(device) for t in batch]
+            optimizer.zero_grad()
+            output = model(b_input_ids, attention_mask=b_input_mask, labels=b_labels)
             loss = output.loss
-            total_train_loss += loss.item()
-            
-            # Backward pass: calcula os gradientes da perda em relação aos parâmetros do modelo.
+            train_loss += loss.item()
             loss.backward()
-            
-            # "Corta" os gradientes para evitar que explodam, um problema comum em redes neurais profundas.
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0);
-            
-            # Atualiza os pesos do modelo usando o otimizador.
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
-            
-            # Atualiza a taxa de aprendizado.
             scheduler.step()
+        avg_train_loss = train_loss / len(train_dataloader)
 
-        avg_train_loss = total_train_loss / len(train_dataloader)
-        training_time = format_time(time.time() - t0)
-        print(f"\n  Média da perda de treino: {avg_train_loss:.4f}")
-        print(f"  Tempo de treino da época: {training_time}")
-
-        # --- Loop de Validação ---
-        print("\nValidando...")
-        t0 = time.time()
-        
-        # Coloca o modelo em modo de avaliação. Camadas como Dropout se comportam de forma diferente.
+        # Validação
         model.eval()
-        all_preds, all_labels = [], []
+        val_loss, all_preds, all_labels = 0, [], []
+        with torch.no_grad():
+            for batch in val_dataloader:
+                b_input_ids, b_input_mask, b_labels = [t.to(device) for t in batch]
+                output = model(b_input_ids, attention_mask=b_input_mask, labels=b_labels)
+                loss = output.loss
+                val_loss += loss.item()
+                preds = np.argmax(output.logits.detach().cpu().numpy(), axis=1)
+                labels = b_labels.cpu().numpy()
+                all_preds.extend(preds)
+                all_labels.extend(labels)
 
-        for batch in val_dataloader:
-            b_input_ids, b_input_mask, b_labels = batch[0].to(device), batch[1].to(device), batch[2].to(device)
-            
-            # `torch.no_grad()` desativa o cálculo de gradientes, economizando memória e acelerando a validação.
-            with torch.no_grad():
-                output = model(b_input_ids, token_type_ids=None, attention_mask=b_input_mask)
-            
-            # A saída do modelo (logits) são as pontuações brutas para cada classe.
-            logits = output.logits
-            # `np.argmax` seleciona a classe com a maior pontuação como a predição do modelo.
-            preds = np.argmax(logits.detach().cpu().numpy(), axis=1).flatten()
-            labels = b_labels.cpu().numpy().flatten()
-            
-            # Armazena as predições e rótulos de todos os lotes para calcular a métrica final.
-            all_preds.extend(preds)
-            all_labels.extend(labels)
-            
-        # Calcula o F1-Score, uma métrica robusta para classificação desbalanceada.
-        f1 = f1_score(all_labels, all_preds, average='macro')
-        print(f"  F1-Score (Macro) na validação: {f1:.4f}")
-        validation_time = format_time(time.time() - t0)
-        print(f"  Tempo de validação: {validation_time}")
+        avg_val_loss = val_loss / len(val_dataloader)
+        
+        f1 = f1_score(all_labels, all_preds, pos_label=1, average='binary', zero_division=0)
+        
+        epoch_time = format_time(time.time() - t0)
+        print(f"Tempo da Época: {epoch_time}")
+        print(f"Loss Treino: {avg_train_loss:.4f} | Loss Val: {avg_val_loss:.4f} | F1 Val (Binário): {f1:.4f}")
 
     print("\n--- Treinamento Concluído! ---")
 
-# Ponto de entrada do script.
+# --------------------------------------------------------------------------
+# 5. PONTO DE ENTRADA DO SCRIPT
+# --------------------------------------------------------------------------
 if __name__ == '__main__':
-    # Redireciona a saída padrão (stdout) para o nosso logger.
-    # Isso garante que tudo que é impresso na tela seja salvo no arquivo de log.
     sys.stdout = Logger(ARQUIVO_DE_LOG)
-    
-    print("Iniciando execução do script...")
-    print(f"Data e Hora: {datetime.datetime.now()}")
+    print(f"Iniciando execução do script de treino único: {datetime.datetime.now()}")
     print("-" * 30)
-    
-    main() # Executa a função principal
-    
+    main()
     print("-" * 30)
-    print("Execução finalizada.")
+    print(f"Execução finalizada: {datetime.datetime.now()}")
