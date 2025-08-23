@@ -2,21 +2,30 @@ import pandas as pd
 import numpy as np
 import re
 import time
+import os
+import datetime
 from sklearn.metrics import f1_score, confusion_matrix
 from tqdm import tqdm
 from googleapiclient import discovery
 from googleapiclient.errors import HttpError
 
 # --- PARÂMETROS DO EXPERIMENTO ---
-API_KEY = "INSERIR_CHAVE_API_AQUI"
-ARQUIVO_ROTULADO = "amostra_rotulada.csv"
-ARQUIVO_LOG = "log_experimento_persp_api.txt"
+API_KEY = "SUA_CHAVE_API_AQUI" # IMPORTANTE: Insira sua chave da API aqui
+
+# --- Definição dinâmica dos caminhos ---
+script_dir = os.path.dirname(os.path.abspath(__file__))
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+ARQUIVO_ROTULADO = os.path.join(script_dir, "amostra_rotulada.csv")
+ARQUIVO_LOG = os.path.join(script_dir, f"log_experimento_persp_api_{timestamp}.txt")
+# --- Fim da definição dinâmica ---
+
 N_REPLICACOES = 30
 LIMIAR_TOXICIDADE = 0.60
 
 # --- INÍCIO DO LOG ---
 log_output = []
-log_output.append("--- INÍCIO DO LOG DO EXPERIMENTO ---")
+log_output.append("--- INÍCIO DO LOG DO EXPERIMENTO (PERSPECTIVE API) ---")
 log_output.append(f"Data de execução: {pd.Timestamp.now()}")
 log_output.append("-" * 30)
 
@@ -29,6 +38,7 @@ def preprocessamento_padrao(texto):
     return texto.strip()
 
 def obter_predicoes_api(dataframe, api_key):
+    # (O conteúdo desta função permanece o mesmo)
     client = discovery.build("commentanalyzer", "v1alpha1", developerKey=api_key, static_discovery=False)
     textos = dataframe['mensagem_processada'].tolist()
     predicoes = []
@@ -57,44 +67,19 @@ def obter_predicoes_api(dataframe, api_key):
             predicoes.append(0)
             scores.append(-1.0)
 
-        time.sleep(1.1)
+        time.sleep(1.1) # Pausa para não exceder o limite de requisições da API
     
     return predicoes, scores
 
-def analisar_debug(df_com_predicoes, nome_cenario):
-    log_debug = []
-    log_debug.append(f"\n--- ANÁLISE DE DEBUG ({nome_cenario}) ---")
-    
-    df_debug = df_com_predicoes[(df_com_predicoes['classificacao_binaria'] == 1) | (df_com_predicoes['predicao_api'] == 1)].copy()
-
-    if df_debug.empty:
-        log_debug.append("DEBUG: Nenhum comentário tóxico foi encontrado na amostra E a API não previu nenhum como tóxico.")
-    else:
-        log_debug.append("Casos relevantes (Reais=1 ou Preditos=1):")
-        log_debug.append(df_debug[['mensagem', 'classificacao_binaria', 'score_api', 'predicao_api']].to_string())
-
-    log_debug.append("\nMatriz de Confusão:")
-    cm = confusion_matrix(df_com_predicoes['classificacao_binaria'], df_com_predicoes['predicao_api'], labels=[0, 1])
-    df_cm = pd.DataFrame(cm, index=['Real: Não Tóxico', 'Real: Tóxico'], columns=['Predito: Não Tóxico', 'Predito: Tóxico'])
-    log_debug.append(df_cm.to_string())
-    log_debug.append("-" * 25)
-    
-    # Imprime na tela e retorna a string para o log principal
-    full_log_string = "\n".join(log_debug)
-    print(full_log_string)
-    return full_log_string
-
 # --- EXECUÇÃO DO EXPERIMENTO ---
 
-print("Carregando dados rotulados...")
-df_original = pd.read_csv(ARQUIVO_ROTULADO)
-
-# # --- MODO DE TESTE (comente ou remova para ativar/desativar) ---
-# df_original = df_original.sample(n=50, random_state=42)
-# msg_teste = f"--- ATENÇÃO: RODANDO EM MODO DE TESTE COM APENAS {len(df_original)} AMOSTRAS ---"
-# print(msg_teste)
-# log_output.append(msg_teste)
-# # -----------------------------------------
+try:
+    print("Carregando dados rotulados...")
+    df_original = pd.read_csv(ARQUIVO_ROTULADO)
+except FileNotFoundError:
+    print(f"\nERRO: O arquivo de dados '{os.path.basename(ARQUIVO_ROTULADO)}' não foi encontrado.")
+    print(f"Por favor, certifique-se de que ele está na mesma pasta que o script.")
+    exit() # Encerra o script se o arquivo não for encontrado
 
 df_original['mensagem'] = df_original['mensagem'].astype(str)
 
@@ -108,17 +93,14 @@ df_padrao['mensagem_processada'] = df_padrao['mensagem'].apply(preprocessamento_
 df_bruto['predicao_api'], df_bruto['score_api'] = obter_predicoes_api(df_bruto, API_KEY)
 df_padrao['predicao_api'], df_padrao['score_api'] = obter_predicoes_api(df_padrao, API_KEY)
 
-# Roda e salva a análise de debug
-log_output.append(analisar_debug(df_bruto, "Bruto"))
-log_output.append(analisar_debug(df_padrao, "Padrão"))
-
 # Realiza o Bootstrap
 resultados = {"bruto": [], "padrao": []}
-print("\n--- Iniciando simulação Bootstrap (rápido) ---")
+print("\n--- Iniciando simulação Bootstrap ---")
 for df, nome_cenario in [(df_bruto, "bruto"), (df_padrao, "padrao")]:
     for i in tqdm(range(N_REPLICACOES), desc=f"Bootstrap ({nome_cenario.capitalize()})"):
         amostra = df.sample(n=len(df), replace=True, random_state=i)
-        f1 = f1_score(amostra['classificacao_binaria'], amostra['predicao_api'], pos_label=1, zero_division=0)
+        # Usando o F1-Score binário, focado na classe 1 (Tóxico)
+        f1 = f1_score(amostra['classificacao_binaria'], amostra['predicao_api'], pos_label=1, average='binary', zero_division=0)
         resultados[nome_cenario].append(f1)
 
 # --- ANÁLISE E LOG DOS RESULTADOS FINAIS ---
@@ -128,29 +110,27 @@ std_bruto = np.std(resultados["bruto"])
 media_padrao = np.mean(resultados["padrao"])
 std_padrao = np.std(resultados["padrao"])
 
-# Prepara as strings para o log e para a impressão na tela
-header_final = "\n\n--- Resultados Finais do Experimento (Perspective API) ---"
-resultado_bruto_str = f"Pré-processamento Bruto:      F1-Score Médio = {media_bruto:.4f} (Desvio Padrão = {std_bruto:.4f})"
-resultado_padrao_str = f"Pré-processamento Padrão:     F1-Score Médio = {media_padrao:.4f} (Desvio Padrão = {std_padrao:.4f})"
-header_y = "\nEstes são os valores de 'y' (variável resposta) para sua análise fatorial:"
-y_bruto_str = f"y (nível -1, Bruto) = {media_bruto:.4f}"
-y_padrao_str = f"y (nível +1, Padrão) = {media_padrao:.4f}"
+# Prepara as strings para o log, agora incluindo a lista completa de scores
+log_final = [
+    "\n\n" + "="*50,
+    "---      RESULTADO FINAL DO EXPERIMENTO (PERSPECTIVE API)      ---",
+    "="*50,
+    f"Pré-processamento: Bruto",
+    f"F1-Scores individuais (arredondado): {[round(f, 4) for f in resultados['bruto']]}",
+    f"F1-SCORE MÉDIO (BINÁRIO, CLASSE 1): {media_bruto:.4f}",
+    f"Desvio Padrão dos F1-Scores: {std_bruto:.4f}",
+    "-"*50,
+    f"Pré-processamento: Padrão",
+    f"F1-Scores individuais (arredondado): {[round(f, 4) for f in resultados['padrao']]}",
+    f"F1-SCORE MÉDIO (BINÁRIO, CLASSE 1): {media_padrao:.4f}",
+    f"Desvio Padrão dos F1-Scores: {std_padrao:.4f}",
+    "="*50
+]
 
-# Imprime na tela
-print(header_final)
-print(resultado_bruto_str)
-print(resultado_padrao_str)
-print(header_y)
-print(y_bruto_str)
-print(y_padrao_str)
-
-# Adiciona ao log
-log_output.append(header_final)
-log_output.append(resultado_bruto_str)
-log_output.append(resultado_padrao_str)
-log_output.append(header_y)
-log_output.append(y_bruto_str)
-log_output.append(y_padrao_str)
+# Imprime na tela e adiciona ao log principal
+for line in log_final:
+    print(line)
+    log_output.append(line)
 
 # --- SALVA O ARQUIVO DE LOG ---
 log_output.append("\n--- FIM DO LOG ---")
