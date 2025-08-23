@@ -1,4 +1,55 @@
-Iniciando execução do script: 2025-08-18 00:14:14.469211
+Iniciando execução do script: 2025-08-23 00:59:52.330812
+------------------------------
+Iniciando execução do script: 2025-08-23 01:00:46.763440
+------------------------------
+Modo de pré-processamento selecionado: 'bruto'
+Usando GPU: NVIDIA GeForce GTX 1060 6GB
+
+--- Iniciando 50 repetições de Bootstrap ---
+
+--- Repetição 1/50 ---
+Iniciando execução do script: 2025-08-23 01:00:50.543565
+------------------------------
+Modo de pré-processamento selecionado: 'bruto'
+Usando GPU: NVIDIA GeForce GTX 1060 6GB
+
+--- Iniciando 50 repetições de Bootstrap ---
+
+--- Repetição 1/50 ---
+Iniciando execução do script: 2025-08-23 01:02:44.847019
+------------------------------
+Modo de pré-processamento selecionado: 'bruto'
+Nenhuma GPU encontrada, usando CPU.
+
+--- Iniciando 50 repetições de Bootstrap ---
+
+--- Repetição 1/50 ---
+
+---- Época 1/3 ----
+Iniciando execução do script: 2025-08-23 01:12:23.082842
+------------------------------
+Modo de pré-processamento selecionado: 'bruto'
+Usando GPU: NVIDIA GeForce GTX 1060 6GB
+
+--- Iniciando 50 repetições de Bootstrap ---
+
+--- Repetição 1/50 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2265 | Loss Val: 0.1557 | F1 Val: 0.3913
+
+---- Época 2/3 ----
+Loss Treino: 0.1041 | Loss Val: 0.1711 | F1 Val: 0.6032
+
+---- Época 3/3 ----
+Loss Treino: 0.0484 | Loss Val: 0.1935 | F1 Val: 0.6471
+Melhor F1-Score da repetição: 0.6471
+Tempo da repetição: 00:04:05
+
+--- Repetição 2/50 ---
+
+---- Época 1/3 ----
+Iniciando execução do script: 2025-08-23 01:17:19.203841
 ------------------------------
 Modo de pré-processamento selecionado: 'bruto'
 Usando GPU: NVIDIA GeForce GTX 1060 6GB
@@ -6,222 +57,394 @@ Usando GPU: NVIDIA GeForce GTX 1060 6GB
 --- Iniciando 30 repetições de Bootstrap ---
 
 --- Repetição 1/30 ---
-Iniciando execução do script: 2025-08-18 00:19:42.877740
-------------------------------
-Modo de pré-processamento selecionado: 'bruto'
-Usando GPU: NVIDIA GeForce GTX 1060 6GB
 
---- Iniciando 30 repetições de Bootstrap ---
+---- Época 1/3 ----
+Loss Treino: 0.2286 | Loss Val: 0.1604 | F1 Val: 0.4590
 
---- Repetição 1/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8037
-Tempo da repetição: 00:04:09
+---- Época 2/3 ----
+Loss Treino: 0.0988 | Loss Val: 0.1639 | F1 Val: 0.6316
 
---- Repetição 2/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.9184
-Tempo da repetição: 00:04:14
-
---- Repetição 3/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8354
-Tempo da repetição: 00:04:09
-
---- Repetição 4/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8697
-Tempo da repetição: 00:04:15
-
---- Repetição 5/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7636
-Tempo da repetição: 00:04:11
-
---- Repetição 6/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8233
-Tempo da repetição: 00:04:13
-
---- Repetição 7/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8477
-Tempo da repetição: 00:04:10
-
---- Repetição 8/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8458
-Tempo da repetição: 00:04:07
-
---- Repetição 9/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8163
-Tempo da repetição: 00:04:07
-
---- Repetição 10/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7882
+---- Época 3/3 ----
+Loss Treino: 0.0436 | Loss Val: 0.1773 | F1 Val: 0.6667
+Melhor F1-Score da repetição: 0.6667
 Tempo da repetição: 00:04:06
 
---- Repetição 11/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7680
+--- Repetição 2/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2348 | Loss Val: 0.1406 | F1 Val: 0.0645
+
+---- Época 2/3 ----
+Loss Treino: 0.1198 | Loss Val: 0.1017 | F1 Val: 0.7308
+
+---- Época 3/3 ----
+Loss Treino: 0.0671 | Loss Val: 0.0950 | F1 Val: 0.8197
+Melhor F1-Score da repetição: 0.8197
+Tempo da repetição: 00:04:07
+
+--- Repetição 3/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2409 | Loss Val: 0.1915 | F1 Val: 0.2632
+
+---- Época 2/3 ----
+Loss Treino: 0.1258 | Loss Val: 0.1657 | F1 Val: 0.6400
+
+---- Época 3/3 ----
+Loss Treino: 0.0594 | Loss Val: 0.1737 | F1 Val: 0.6538
+Melhor F1-Score da repetição: 0.6538
+Tempo da repetição: 00:04:06
+
+--- Repetição 4/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2399 | Loss Val: 0.1554 | F1 Val: 0.1212
+
+---- Época 2/3 ----
+Loss Treino: 0.1241 | Loss Val: 0.1102 | F1 Val: 0.6545
+
+---- Época 3/3 ----
+Loss Treino: 0.0549 | Loss Val: 0.1210 | F1 Val: 0.7200
+Melhor F1-Score da repetição: 0.7200
 Tempo da repetição: 00:04:08
 
+--- Repetição 5/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2427 | Loss Val: 0.1981 | F1 Val: 0.2703
+
+---- Época 2/3 ----
+Loss Treino: 0.1179 | Loss Val: 0.1786 | F1 Val: 0.5600
+
+---- Época 3/3 ----
+Loss Treino: 0.0537 | Loss Val: 0.2136 | F1 Val: 0.5660
+Melhor F1-Score da repetição: 0.5660
+Tempo da repetição: 00:04:26
+
+--- Repetição 6/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2293 | Loss Val: 0.1484 | F1 Val: 0.5000
+
+---- Época 2/3 ----
+Loss Treino: 0.1197 | Loss Val: 0.1278 | F1 Val: 0.6800
+
+---- Época 3/3 ----
+Loss Treino: 0.0699 | Loss Val: 0.1285 | F1 Val: 0.6939
+Melhor F1-Score da repetição: 0.6939
+Tempo da repetição: 00:04:25
+
+--- Repetição 7/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2305 | Loss Val: 0.1841 | F1 Val: 0.2632
+
+---- Época 2/3 ----
+Loss Treino: 0.1306 | Loss Val: 0.1261 | F1 Val: 0.6383
+
+---- Época 3/3 ----
+Loss Treino: 0.0669 | Loss Val: 0.1384 | F1 Val: 0.6667
+Melhor F1-Score da repetição: 0.6667
+Tempo da repetição: 00:04:25
+
+--- Repetição 8/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2591 | Loss Val: 0.1628 | F1 Val: 0.3000
+
+---- Época 2/3 ----
+Loss Treino: 0.1452 | Loss Val: 0.1155 | F1 Val: 0.7458
+
+---- Época 3/3 ----
+Loss Treino: 0.0676 | Loss Val: 0.1066 | F1 Val: 0.7647
+Melhor F1-Score da repetição: 0.7647
+Tempo da repetição: 00:04:25
+
+--- Repetição 9/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2488 | Loss Val: 0.2103 | F1 Val: 0.0000
+
+---- Época 2/3 ----
+Loss Treino: 0.1733 | Loss Val: 0.1670 | F1 Val: 0.3636
+
+---- Época 3/3 ----
+Loss Treino: 0.0948 | Loss Val: 0.1604 | F1 Val: 0.5500
+Melhor F1-Score da repetição: 0.5500
+Tempo da repetição: 00:04:25
+
+--- Repetição 10/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2284 | Loss Val: 0.1873 | F1 Val: 0.1333
+
+---- Época 2/3 ----
+Loss Treino: 0.1160 | Loss Val: 0.1594 | F1 Val: 0.5652
+
+---- Época 3/3 ----
+Loss Treino: 0.0602 | Loss Val: 0.1720 | F1 Val: 0.6122
+Melhor F1-Score da repetição: 0.6122
+Tempo da repetição: 00:04:25
+
+--- Repetição 11/30 ---
+
+---- Época 1/3 ----
+Loss Treino: 0.2305 | Loss Val: 0.1672 | F1 Val: 0.2857
+
+---- Época 2/3 ----
+Loss Treino: 0.1032 | Loss Val: 0.1495 | F1 Val: 0.6786
+
+---- Época 3/3 ----
+Loss Treino: 0.0460 | Loss Val: 0.1648 | F1 Val: 0.6909
+Melhor F1-Score da repetição: 0.6909
+Tempo da repetição: 00:04:25
+
 --- Repetição 12/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7849
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2364 | Loss Val: 0.1661 | F1 Val: 0.0000
+
+---- Época 2/3 ----
+Loss Treino: 0.1164 | Loss Val: 0.1436 | F1 Val: 0.5833
+
+---- Época 3/3 ----
+Loss Treino: 0.0570 | Loss Val: 0.1510 | F1 Val: 0.6364
+Melhor F1-Score da repetição: 0.6364
+Tempo da repetição: 00:04:25
 
 --- Repetição 13/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8160
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2440 | Loss Val: 0.1811 | F1 Val: 0.4444
+
+---- Época 2/3 ----
+Loss Treino: 0.1339 | Loss Val: 0.1844 | F1 Val: 0.5417
+
+---- Época 3/3 ----
+Loss Treino: 0.0788 | Loss Val: 0.1798 | F1 Val: 0.5417
+Melhor F1-Score da repetição: 0.5417
+Tempo da repetição: 00:04:26
 
 --- Repetição 14/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8341
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2341 | Loss Val: 0.1881 | F1 Val: 0.4000
+
+---- Época 2/3 ----
+Loss Treino: 0.1188 | Loss Val: 0.1685 | F1 Val: 0.6429
+
+---- Época 3/3 ----
+Loss Treino: 0.0577 | Loss Val: 0.1765 | F1 Val: 0.7097
+Melhor F1-Score da repetição: 0.7097
+Tempo da repetição: 00:04:25
 
 --- Repetição 15/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8894
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2256 | Loss Val: 0.1247 | F1 Val: 0.4000
+
+---- Época 2/3 ----
+Loss Treino: 0.1055 | Loss Val: 0.1090 | F1 Val: 0.7368
+
+---- Época 3/3 ----
+Loss Treino: 0.0463 | Loss Val: 0.1154 | F1 Val: 0.7213
+Melhor F1-Score da repetição: 0.7368
+Tempo da repetição: 00:04:25
 
 --- Repetição 16/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8167
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2193 | Loss Val: 0.1488 | F1 Val: 0.3125
+
+---- Época 2/3 ----
+Loss Treino: 0.1049 | Loss Val: 0.1441 | F1 Val: 0.6364
+
+---- Época 3/3 ----
+Loss Treino: 0.0506 | Loss Val: 0.1422 | F1 Val: 0.6818
+Melhor F1-Score da repetição: 0.6818
+Tempo da repetição: 00:04:25
 
 --- Repetição 17/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8233
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2367 | Loss Val: 0.1997 | F1 Val: 0.1765
+
+---- Época 2/3 ----
+Loss Treino: 0.1293 | Loss Val: 0.1642 | F1 Val: 0.5714
+
+---- Época 3/3 ----
+Loss Treino: 0.0680 | Loss Val: 0.1858 | F1 Val: 0.5833
+Melhor F1-Score da repetição: 0.5833
+Tempo da repetição: 00:04:25
 
 --- Repetição 18/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7924
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2164 | Loss Val: 0.1619 | F1 Val: 0.0000
+
+---- Época 2/3 ----
+Loss Treino: 0.1149 | Loss Val: 0.1477 | F1 Val: 0.6341
+
+---- Época 3/3 ----
+Loss Treino: 0.0603 | Loss Val: 0.1495 | F1 Val: 0.6222
+Melhor F1-Score da repetição: 0.6341
+Tempo da repetição: 00:04:26
 
 --- Repetição 19/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8083
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2088 | Loss Val: 0.1602 | F1 Val: 0.0000
+
+---- Época 2/3 ----
+Loss Treino: 0.1256 | Loss Val: 0.1472 | F1 Val: 0.5238
+
+---- Época 3/3 ----
+Loss Treino: 0.0626 | Loss Val: 0.1544 | F1 Val: 0.5366
+Melhor F1-Score da repetição: 0.5366
+Tempo da repetição: 00:04:25
 
 --- Repetição 20/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7347
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2270 | Loss Val: 0.2263 | F1 Val: 0.1212
+
+---- Época 2/3 ----
+Loss Treino: 0.1108 | Loss Val: 0.2117 | F1 Val: 0.5490
+
+---- Época 3/3 ----
+Loss Treino: 0.0555 | Loss Val: 0.2289 | F1 Val: 0.6000
+Melhor F1-Score da repetição: 0.6000
+Tempo da repetição: 00:04:25
 
 --- Repetição 21/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8095
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2207 | Loss Val: 0.1411 | F1 Val: 0.2703
+
+---- Época 2/3 ----
+Loss Treino: 0.1049 | Loss Val: 0.1424 | F1 Val: 0.6545
+
+---- Época 3/3 ----
+Loss Treino: 0.0478 | Loss Val: 0.1505 | F1 Val: 0.6667
+Melhor F1-Score da repetição: 0.6667
+Tempo da repetição: 00:04:25
 
 --- Repetição 22/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7709
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2351 | Loss Val: 0.1946 | F1 Val: 0.1212
+
+---- Época 2/3 ----
+Loss Treino: 0.1048 | Loss Val: 0.2060 | F1 Val: 0.6000
+
+---- Época 3/3 ----
+Loss Treino: 0.0532 | Loss Val: 0.2115 | F1 Val: 0.5882
+Melhor F1-Score da repetição: 0.6000
+Tempo da repetição: 00:04:25
 
 --- Repetição 23/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7610
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2252 | Loss Val: 0.1715 | F1 Val: 0.1379
+
+---- Época 2/3 ----
+Loss Treino: 0.1263 | Loss Val: 0.1425 | F1 Val: 0.4615
+
+---- Época 3/3 ----
+Loss Treino: 0.0567 | Loss Val: 0.1638 | F1 Val: 0.6190
+Melhor F1-Score da repetição: 0.6190
+Tempo da repetição: 00:04:25
 
 --- Repetição 24/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.7778
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2211 | Loss Val: 0.1620 | F1 Val: 0.2857
+
+---- Época 2/3 ----
+Loss Treino: 0.1143 | Loss Val: 0.1725 | F1 Val: 0.4737
+
+---- Época 3/3 ----
+Loss Treino: 0.0623 | Loss Val: 0.1644 | F1 Val: 0.5833
+Melhor F1-Score da repetição: 0.5833
+Tempo da repetição: 00:04:25
 
 --- Repetição 25/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8509
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2367 | Loss Val: 0.1684 | F1 Val: 0.4898
+
+---- Época 2/3 ----
+Loss Treino: 0.1198 | Loss Val: 0.1645 | F1 Val: 0.6197
+
+---- Época 3/3 ----
+Loss Treino: 0.0562 | Loss Val: 0.1575 | F1 Val: 0.6866
+Melhor F1-Score da repetição: 0.6866
+Tempo da repetição: 00:04:25
 
 --- Repetição 26/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.9129
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2153 | Loss Val: 0.1376 | F1 Val: 0.2424
+
+---- Época 2/3 ----
+Loss Treino: 0.1117 | Loss Val: 0.0925 | F1 Val: 0.7368
+
+---- Época 3/3 ----
+Loss Treino: 0.0585 | Loss Val: 0.0794 | F1 Val: 0.7778
+Melhor F1-Score da repetição: 0.7778
+Tempo da repetição: 00:04:26
 
 --- Repetição 27/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8033
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2346 | Loss Val: 0.1681 | F1 Val: 0.3721
+
+---- Época 2/3 ----
+Loss Treino: 0.1169 | Loss Val: 0.1472 | F1 Val: 0.6780
+
+---- Época 3/3 ----
+Loss Treino: 0.0643 | Loss Val: 0.1449 | F1 Val: 0.7018
+Melhor F1-Score da repetição: 0.7018
+Tempo da repetição: 00:04:25
 
 --- Repetição 28/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.9184
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2366 | Loss Val: 0.1149 | F1 Val: 0.6415
+
+---- Época 2/3 ----
+Loss Treino: 0.1139 | Loss Val: 0.1058 | F1 Val: 0.7586
+
+---- Época 3/3 ----
+Loss Treino: 0.0593 | Loss Val: 0.1053 | F1 Val: 0.8125
+Melhor F1-Score da repetição: 0.8125
+Tempo da repetição: 00:04:25
 
 --- Repetição 29/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8379
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2559 | Loss Val: 0.2131 | F1 Val: 0.0000
+
+---- Época 2/3 ----
+Loss Treino: 0.1617 | Loss Val: 0.1477 | F1 Val: 0.5490
+
+---- Época 3/3 ----
+Loss Treino: 0.0823 | Loss Val: 0.1475 | F1 Val: 0.6780
+Melhor F1-Score da repetição: 0.6780
+Tempo da repetição: 00:04:25
 
 --- Repetição 30/30 ---
-    -> Treinando Época 1/3...
-    -> Treinando Época 2/3...
-    -> Treinando Época 3/3...
-Melhor F1-Score da repetição: 0.8857
-Tempo da repetição: 00:04:04
+
+---- Época 1/3 ----
+Loss Treino: 0.2478 | Loss Val: 0.1655 | F1 Val: 0.2222
+
+---- Época 2/3 ----
+Loss Treino: 0.1119 | Loss Val: 0.1229 | F1 Val: 0.6667
+
+---- Época 3/3 ----
+Loss Treino: 0.0516 | Loss Val: 0.1267 | F1 Val: 0.7059
+Melhor F1-Score da repetição: 0.7059
+Tempo da repetição: 00:04:26
 
 ==================================================
 ---            RESULTADO FINAL DO EXPERIMENTO            ---
@@ -229,11 +452,11 @@ Tempo da repetição: 00:04:04
 Modelo: neuralmind/bert-base-portuguese-cased
 Pré-processamento: bruto
 Número de Replicações: 30
-F1-Scores individuais (arredondado): [0.8037, 0.9184, 0.8354, 0.8697, 0.7636, 0.8233, 0.8477, 0.8458, 0.8163, 0.7882, 0.768, 0.7849, 0.816, 0.8341, 0.8894, 0.8167, 0.8233, 0.7924, 0.8083, 0.7347, 0.8095, 0.7709, 0.761, 0.7778, 0.8509, 0.9129, 0.8033, 0.9184, 0.8379, 0.8857]
+F1-Scores individuais (arredondado): [0.6667, 0.8197, 0.6538, 0.72, 0.566, 0.6939, 0.6667, 0.7647, 0.55, 0.6122, 0.6909, 0.6364, 0.5417, 0.7097, 0.7368, 0.6818, 0.5833, 0.6341, 0.5366, 0.6, 0.6667, 0.6, 0.619, 0.5833, 0.6866, 0.7778, 0.7018, 0.8125, 0.678, 0.7059]
 
 --------------------------------------------------
-F1-SCORE MÉDIO (MACRO): 0.8236
-Desvio Padrão dos F1-Scores: 0.0473
+F1-SCORE MÉDIO (MACRO): 0.6632
+Desvio Padrão dos F1-Scores: 0.0747
 ==================================================
 ------------------------------
-Execução finalizada: 2025-08-18 02:22:57.865268
+Execução finalizada: 2025-08-23 03:29:02.215690
