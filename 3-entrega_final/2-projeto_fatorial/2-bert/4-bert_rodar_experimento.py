@@ -21,6 +21,8 @@ from torch.utils.data import TensorDataset, DataLoader, RandomSampler, Sequentia
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score
 from sklearn.utils import resample
+from math import isfinite
+
 
 # --------------------------------------------------------------------------
 # 2. CONFIGURAÇÕES GLOBAIS DO EXPERIMENTO
@@ -42,7 +44,7 @@ BATCH_SIZE = 16
 TEST_SIZE = 0.15
 RANDOM_STATE = 42
 EPOCHS = 3
-N_REPLICACOES = 30 # Número de repetições do Bootstrap
+N_REPLICACOES = 50 # Número de repetições do Bootstrap
 
 # --------------------------------------------------------------------------
 # 3. CLASSES E FUNÇÕES AUXILIARES
@@ -112,40 +114,61 @@ def treinar_e_avaliar(df_amostra: pd.DataFrame, device: torch.device) -> float:
     best_f1_score = 0.0
 
     # Loop de treinamento por N épocas
-    for epoch_i in range(0, EPOCHS):
-        print(f"    -> Treinando Época {epoch_i + 1}/{EPOCHS}...")
+    for epoch_i in range(EPOCHS):
+        print(f"\n---- Época {epoch_i + 1}/{EPOCHS} ----")
+
+        # --- Treinamento ---
         model.train()
+        train_loss = 0.0
         for batch in train_dataloader:
-            b_input_ids, b_input_mask, b_labels = batch[0].to(device), batch[1].to(device), batch[2].to(device)
-            model.zero_grad()
-            output = model(b_input_ids, token_type_ids=None, attention_mask=b_input_mask, labels=b_labels)
+            b_input_ids, b_input_mask, b_labels = [t.to(device) for t in batch]
+
+            optimizer.zero_grad()
+            output = model(b_input_ids,
+                           attention_mask=b_input_mask,
+                           labels=b_labels)
             loss = output.loss
-            loss.backward() # Realiza o backpropagation para calcular os gradientes
+            train_loss += loss.item()
+
+            loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
             scheduler.step()
 
-        # Fase de validação
-        model.eval() # Ativa o modo de avaliação (desliga camadas como dropout)
+        avg_train_loss = train_loss / len(train_dataloader)
+
+        # --- Validação ---
+        model.eval()
+        val_loss = 0.0
         all_preds, all_labels = [], []
-        
-        # 'torch.no_grad()' desativa o cálculo de gradientes, economizando memória e tempo
         with torch.no_grad():
             for batch in val_dataloader:
-                b_input_ids, b_input_mask, b_labels = batch[0].to(device), batch[1].to(device), batch[2].to(device)
-                output = model(b_input_ids, token_type_ids=None, attention_mask=b_input_mask)
+                b_input_ids, b_input_mask, b_labels = [t.to(device) for t in batch]
+                output = model(b_input_ids,
+                               attention_mask=b_input_mask,
+                               labels=b_labels)
+
+                loss = output.loss
+                val_loss += loss.item()
+
                 logits = output.logits
-                preds = np.argmax(logits.detach().cpu().numpy(), axis=1).flatten()
-                labels = b_labels.cpu().numpy().flatten()
-                all_preds.extend(preds); all_labels.extend(labels)
-            
-        # Calcula o F1-Score da época atual e guarda o melhor resultado
-        # 'zero_division=0' evita avisos caso uma classe não tenha predições
-        f1 = f1_score(all_labels, all_preds, average='macro', zero_division=0)
+                preds = np.argmax(logits.detach().cpu().numpy(), axis=1)
+                labels = b_labels.cpu().numpy()
+                all_preds.extend(preds)
+                all_labels.extend(labels)
+
+        avg_val_loss = val_loss / len(val_dataloader)
+        f1 = f1_score(all_labels, all_preds, pos_label=1, average='binary', zero_division=0)
+
+        print(f"Loss Treino: {avg_train_loss:.4f} | Loss Val: {avg_val_loss:.4f} | F1 Val: {f1:.4f}")
+
         if f1 > best_f1_score:
-            best_f1_score = f1
-            
-    return best_f1_score
+            if not np.isfinite(f1):
+                f1 = 0.0
+            best_f1_score = max(best_f1_score, f1)
+       
+    return float(best_f1_score)
+
 
 # --------------------------------------------------------------------------
 # 5. ORQUESTRADOR DO EXPERIMENTO
